@@ -2,6 +2,11 @@
 # vi: set ft=ruby :
 
 Vagrant.configure("2") do |config|
+  if Vagrant.has_plugin?("vagrant-proxyconf")
+    config.proxy.http     = "http://one.proxy.att.com:8080"
+    config.proxy.https    = "http://one.proxy.att.com:8080"
+    config.proxy.no_proxy = "localhost,127.0.0.1"
+  end
   config.vm.box = "bento/ubuntu-16.04"
   config.vm.box_version = "= 2.3.5"
   config.vm.synced_folder ".", "/vagrant"
