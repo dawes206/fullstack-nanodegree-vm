@@ -38,39 +38,33 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #test = open('index.html')
-                #self.wfile.write(test.read().encode())
                 return
             if self.path == '/restaurants':
+                restaurantNames = getRestaurantNames()
+                restaurantNamesString = '\n'.join(restaurantNames)
+
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #test = open('restaurants.html')
-                #self.wfile.write(test.read().encode())
-                restaurantNames = getRestaurantNames()
-                restaurantNamesString = '\n'.join(restaurantNames)
                 self.wfile.write(restaurantsHTML.format(restaurantNamesString).encode())
                 return
             if self.path == '/restaurants/new':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #test = open('new_restaurants.html')
-                #self.wfile.write(test.read().encode())
+
                 return
             if self.path == '/restaurant/id/edit':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #test = open('edit_restaurant.html')
-                #self.wfile.write(test.read().encode())
+
                 return
             if self.path == '/test':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #test = open('edit_restaurant.html')
-                #self.wfile.write(test.read().encode())
+
                 self.wfile.write(testHTML.format(testFunc()).encode()) #.format html strings to input values that I want. These values can come from dtabase_connection's functions
             else:
                 self.send_error(404, 'File Not Found: %s' % self.path)
