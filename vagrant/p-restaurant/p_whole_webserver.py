@@ -5,6 +5,7 @@
 #Next thing you should do is STOP! Look at more of the course info. Know what they want you to do. Relax!!! There are literally objectives. It's possible that he has a different approach entirely.
 #Think about what you would have your code do. Really think about it. Map it out on paper, maybe. Know what you would do, be able to explain it, and then go on. Be happy with knowing you COULD do it your way.
 #But, at the end of the day, do it the way that will take the least work (following his approach). That's a skill you desperately need
+#COnsider adding a database to your local machine inestad of just the vm, if possible. It would be awesome if I could just run the script here
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import cgi
