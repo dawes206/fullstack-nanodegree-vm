@@ -9,6 +9,8 @@
 
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import cgi
+import cgitb
+cgitb.enable()
 from os import curdir, sep
 
 from database_connection import testFunc
@@ -28,6 +30,17 @@ restaurantsHTML = '''<html>
   </body>
 </html>'''
 
+newRestaurantsHTML = '''<html>
+  <body>
+    <h1>new restaurant!</h1>
+    <form method=POST action="/restaurants/new">
+      <input type=text name = restaurantname>
+      <input type="submit" value="Submit">
+    </form>
+    <p>testing</p>
+  </body>
+</html>'''
+
 
 
 
@@ -41,20 +54,40 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 return
             if self.path == '/restaurants':
                 restaurantNames = getRestaurantNames()
-                restaurantNamesString = '\n'.join(restaurantNames)
+                # restaurantNamesString = '\n'.join(restaurantNames)
+                print('test')
+
+                message = ''
+                message += '<html><body>'
+                for i in restaurantNames:
+                    message += '<p>{}</p>'.format(i)
+                    message += '<a href =/restaurant/id/edit>Edit </a>'
+                    message += '<a href =/restaurant/id/delete>Delete</a>'
+                message += '</body></html>'
 
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                self.wfile.write(restaurantsHTML.format(restaurantNamesString).encode())
+                # self.wfile.write(restaurantsHTML.format(restaurantNamesString).encode())
+                self.wfile.write(message.encode())
                 return
             if self.path == '/restaurants/new':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
+                # test = open('new_restaurants.html')
+                #self.wfile.write(test.read().encode())
+                self.wfile.write(newRestaurantsHTML.encode())
+
 
                 return
             if self.path == '/restaurant/id/edit':
+                self.send_response(200)
+                self.send_header('Content-type', 'text/html')
+                self.end_headers()
+
+                return
+            if self.path == '/restaurant/id/delete':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
@@ -69,6 +102,44 @@ class WebServerHandler(BaseHTTPRequestHandler):
             else:
                 self.send_error(404, 'File Not Found: %s' % self.path)
                 return
+    #Trying to get do_POST to actually work. It doesn't seem to be doing anything, but I think that's because I don't really understand what happense when I submit a form
+    def do_POST():
+        form = cgi.FieldStorage()
+        self.send_response(200)
+        self.send_header('content-type','text/html')
+        self.end_headers()
+        message = ""
+        message += "<html><body>"
+        # message += "<h1> %s </h1>" % form['name'].value
+        message += "<h1>test</h1>"
+        message += "</body></html>"
+        self.wfile.write(message.encode())
+
+
+
+
+
+
+
+        # try:
+        #     self.send_response(200)
+        #     self.send_header('content-type','text/html')
+        #     self.end_headers()
+        #
+        #     ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
+        #     pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
+        #     if ctype == 'multipart/form-data':
+        #         fields = cgi.parse_multipart(self.rfile, pdict)
+        #         messagecontent =fields.get('message')
+        #         message = ""
+        #         message += "<html><body>"
+        #         message += " <h2> Okay, how about this: </h2>"
+        #         message += "<h1> %s </h1>" % messagecontent[0].decode('utf-8')
+        #         message += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
+        #         message += "</body></html>"
+        #     self.wfile.write(message.encode())
+        # except:
+        #     pass
 
 
 

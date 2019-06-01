@@ -29,4 +29,4 @@ def testFunc():
 def getRestaurantNames():
     restaurantList = session.query(Restaurant).all()
     restaurantNames = map(lambda x: x.name, restaurantList)
-    return restaurantNames
+    return list(restaurantNames)
