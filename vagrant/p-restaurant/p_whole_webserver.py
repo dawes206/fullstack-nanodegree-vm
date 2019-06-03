@@ -20,6 +20,7 @@ from database_connection import addRestaurant
 from database_connection import getRestaurantData
 from database_connection import getRestaurants
 from database_connection import commitData
+from database_connection import deleteRestaurant
 
 
 testHTML = '''<html>
@@ -117,15 +118,27 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.wfile.write(message.encode())
 
                 return
-            if self.path == '/restaurant/id/delete':#if page matches delete page pattern
+            if re.search('restaurant/[0-9]*/delete',self.path):#if page matches delete page pattern
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-
                 #get restaurant row info using path
+                id = self.path[12:-7]
+                try:
+                    id = int(id)
+                except:
+                    print('id not a number')
+                restaurantRow = getRestaurantData(id)
+
                 #html
-                #are you sure you want to delete {}.format(restaurantRow.name)
-                #form field with just a delete button
+                message = ''
+                message = '<html><body>'
+                message += '<h1>Are you sure you want to delete {}</h1>'.format(restaurantRow.name)
+                message += "<form method=POST enctype='multipart/form-data' action='/restaurant/{}/delete'>".format(restaurantRow.id)
+                message += "<input type='submit' value='Delete'>"
+                message += "</form></body></html>"
+
+                self.wfile.write(message.encode())
 
 
                 return
@@ -168,12 +181,21 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.send_header('location','/restaurants')
             self.end_headers()
 
-        #if self.path is delete pattern:
+        if re.search('restaurant/[0-9]*/delete',self.path):
+            id = self.path[12:-7]
+            try:
+                id = int(id)
+            except:
+                print('id not a number')
             #get restaurant using getRestaurantData
+            restaurant = getRestaurantData(id)
             #delete restaurant using new deleteRestaurant function
+            deleteRestaurant(restaurant)
 
             #redirect to restaurants page
-
+            self.send_response(303)
+            self.send_header('location','/restaurants')
+            self.end_headers()
 
 def main():
     try:
