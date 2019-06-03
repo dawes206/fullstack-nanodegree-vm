@@ -43,5 +43,5 @@ def getRestaurantData(input):
         except:
             return 'Error: More than one restaurant with that name'
     elif type(input) == int:
-        restaurant = session.query(restaurant).filter_by(id=input).one()
+        restaurant = session.query(Restaurant).filter_by(id=input).one()
         return restaurant

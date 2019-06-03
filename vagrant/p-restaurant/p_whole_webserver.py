@@ -94,25 +94,29 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 
                 return
-            if self.path == '/restaurant/id/edit': #if self.path matches patter restaurant/*/edit, create webpage that has other data pulled from database based on the id# given
-            #if type(re.search('restaurant/[0-9]*/edit',self.path)) == re.Match:
+            #if self.path == '/restaurant/id/edit': #if self.path matches patter restaurant/*/edit, create webpage that has other data pulled from database based on the id# given
+            if re.search('restaurant/[0-9]*/edit',self.path):
                     #parse self.path string to get value of id. It will always be the same pace, so do self.path[11:(location of 3rd /)]
-                #id = self.path[12:-5]
+                id = self.path[12:-5]
+                try:
+                    id = int(id)
+                except:
+                    print('id not a number')
                     #set get restaurant row using newly defined function getRestaurantData from database_connection. restaurantRow = getRestaurantData(input = id)
-                #restaurantRow = getRestaurantData(id)
+                restaurantRow = getRestaurantData(id)
                 #html
-                #message = '<html><body>'
-                #message += '<h1>Edit {}</h1>'.format(restaurantRow.name)
-                #message += "<form method=POST enctype='multipart/form-data' action='/restaurant/{}/edit'>".format(restaurantRow.id)
-                #message += "<input type=text name = editedRestaurantName value = {}>".format(restaurantRow.name)
-                #message += "<input type='submit' value='Submit'>"
-                #message += "</form></body></html>"
+                message = '<html><body>'
+                message += '<h1>Edit {}</h1>'.format(restaurantRow.name)
+                message += "<form method=POST enctype='multipart/form-data' action='/restaurant/{}/edit'>".format(restaurantRow.id)
+                message += '''<input type=text name = editedRestaurantName value = "{}">'''.format(restaurantRow.name)
+                message += "<input type='submit' value='Submit'>"
+                message += "</form></body></html>"
 
 
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                #self.wfile.write(message.encode())
+                self.wfile.write(message.encode())
 
                 return
             if self.path == '/restaurant/id/delete':
