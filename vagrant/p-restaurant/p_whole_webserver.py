@@ -117,10 +117,16 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.wfile.write(message.encode())
 
                 return
-            if self.path == '/restaurant/id/delete':
+            if self.path == '/restaurant/id/delete':#if page matches delete page pattern
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
+
+                #get restaurant row info using path
+                #html
+                #are you sure you want to delete {}.format(restaurantRow.name)
+                #form field with just a delete button
+
 
                 return
             if self.path == '/test':
@@ -161,6 +167,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.send_response(303)
             self.send_header('location','/restaurants')
             self.end_headers()
+
+        #if self.path is delete pattern:
+            #get restaurant using getRestaurantData
+            #delete restaurant using new deleteRestaurant function
+
+            #redirect to restaurants page
 
 
 def main():

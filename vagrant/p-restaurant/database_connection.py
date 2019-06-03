@@ -49,3 +49,7 @@ def getRestaurantData(input):
 def commitData(object):
     session.add(object)
     session.commit()
+
+def deleteRestaurant(object):
+    session.delete(object)
+    session.commit()
