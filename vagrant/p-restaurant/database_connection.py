@@ -30,3 +30,14 @@ def getRestaurantNames():
     restaurantList = session.query(Restaurant).all()
     restaurantNames = map(lambda x: x.name, restaurantList)
     return list(restaurantNames)
+
+def getRestaurantData(input):
+    if type(input) === str:
+        try:
+            restaurant = session.query(Restaurant).filter_by(name = input).one()
+            return restaurant
+        except:
+            return 'Error: More than one restaurant with that name'
+    elif type(input) === int:
+        restaurant = session.query(restaurant).filter_by(id=input).one()
+        return restaurant

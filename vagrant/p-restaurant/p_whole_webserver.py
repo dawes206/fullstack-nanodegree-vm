@@ -16,6 +16,7 @@ from os import curdir, sep
 from database_connection import testFunc
 from database_connection import getRestaurantNames
 from database_connection import addRestaurant
+from databse_connection import getRestaurantData
 
 
 testHTML = '''<html>
@@ -60,7 +61,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 message += '<html><body>'
                 for i in restaurantNames:
                     message += '<p>{}</p>'.format(i)
-                    message += '<a href =/restaurant/id/edit>Edit </a>'
+                    message += '<a href =/restaurant/id/edit>Edit </a>' #id can be changed to a {} and filled in with the database id number of the restaurant.
                     message += '<a href =/restaurant/id/delete>Delete</a>'
                 message += '<br/>'
                 message += '<a href = /restaurants/new>New Restaurant</a>'
@@ -80,7 +81,13 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 
                 return
-            if self.path == '/restaurant/id/edit':
+            if self.path == '/restaurant/id/edit': #if self.path matches patter restaurant/*/edit, create webpage that has other data pulled from database based on the id# given
+                #parse self.path string to get value of id. It will always be the same pace, so do self.path[11:(location of 3rd /)]
+                #set get restaurant row using newly defined function getRestaurantData from database_connection. restaurantRow = getRestaurantData(input = id)
+                #html
+                    #restaurantRow.name
+                    #form where input field is text and has restaurantRow.name as placeholder (or maybe input. Whichever one will let you edit instead of just overwriting)
+                    #form input field has name editedRestaurantName
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
@@ -102,6 +109,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.send_error(404, 'File Not Found: %s' % self.path)
                 return
     def do_POST(self):
+        #if self.path == '/restaurants/new': Have to distinguis between forms coming from different parts of the server.
         ctype, pdict = cgi.parse_header(self.headers.get('content-type')) #Type needs to be certain type so we can get pdict
         pdict['boundary'] = pdict['boundary'].encode('utf-8') #pdict needs to be in bytes
         fields = cgi.parse_multipart(self.rfile, pdict) #parse the input file based on dictionary of parameters
@@ -112,6 +120,16 @@ class WebServerHandler(BaseHTTPRequestHandler):
         self.send_response(303)
         self.send_header('location','/restaurants')
         self.end_headers()
+
+        #if self.path matches the patter of an edit page....
+        #parse data using above method (or method from bookmark server).
+        #Decode and read the value of editedRestaurantName.
+        #restaurant = getRestaurantData(id (pulled from self.path))
+        #restaurant.name = editedRestaurantName
+        #session.add(restaurant)
+        #session.commit()
+
+        #redirect to restaurant page with a 303 response (see above)
 
 
 def main():
