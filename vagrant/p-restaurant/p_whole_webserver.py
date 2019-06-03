@@ -15,6 +15,7 @@ from os import curdir, sep
 
 from database_connection import testFunc
 from database_connection import getRestaurantNames
+from database_connection import addRestaurant
 
 #html will have {} where I want to insert values
 testHTML = '''<html>
@@ -33,8 +34,8 @@ restaurantsHTML = '''<html>
 newRestaurantsHTML = '''<html>
   <body>
     <h1>new restaurant!</h1>
-    <form method=POST action="/restaurants/new">
-      <input type=text name = restaurantname>
+    <form method=POST enctype='multipart/form-data' action="/restaurants/new">
+      <input type=text name = restaurantName>
       <input type="submit" value="Submit">
     </form>
     <p>testing</p>
@@ -104,16 +105,31 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 return
     #Trying to get do_POST to actually work. It doesn't seem to be doing anything, but I think that's because I don't really understand what happense when I submit a form
     def do_POST(self):
-        form = cgi.FieldStorage()
-        self.send_response(200)
-        self.send_header('content-type','text/html')
+        ctype, pdict = cgi.parse_header(self.headers.get('content-type')) #Type needs to be certain type so we can get pdict
+        # pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
+        pdict['boundary'] = pdict['boundary'].encode('utf-8') #pdict needs to be in bytes
+        fields = cgi.parse_multipart(self.rfile, pdict) #parse the input file based on dictionary of parameters
+        formRestaurant = fields['restaurantName'][0].decode('utf-8') #decode new restaurant name into string
+
+        addRestaurant(formRestaurant)
+
+
+        #redirect to restaurants page
+        self.send_response(303)
+        self.send_header('location','/restaurants')
         self.end_headers()
-        message = ""
-        message += "<html><body>"
-        # message += "<h1> %s </h1>" % form['name'].value
-        message += "<h1>test</h1>"
-        message += "</body></html>"
-        self.wfile.write(message.encode())
+
+        # self.send_response(200)
+        # self.send_header('content-type','text/html')
+        # self.end_headers()
+        # message = ""
+        # message += "<html><body>"
+        # # message += "<h1> %s </h1>" % form['name'].value
+        # # message += "<h1>%s</h1>" %self.headers.get('content-type')
+        # # message += "<h1>%s</h1>" %self.rfile.read(int(self.headers.get('content-length'))).decode()
+        # message += "<h1>%s</h1>"
+        # message += "</body></html>"
+        # self.wfile.write(message.encode())
 
 
 
