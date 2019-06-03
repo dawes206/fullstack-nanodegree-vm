@@ -95,15 +95,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
 
 
                 return
-            #if self.path == '/restaurant/id/edit': #if self.path matches patter restaurant/*/edit, create webpage that has other data pulled from database based on the id# given
             if re.search('restaurant/[0-9]*/edit',self.path):
-                    #parse self.path string to get value of id. It will always be the same pace, so do self.path[11:(location of 3rd /)]
                 id = self.path[12:-5]
                 try:
                     id = int(id)
                 except:
                     print('id not a number')
-                    #set get restaurant row using newly defined function getRestaurantData from database_connection. restaurantRow = getRestaurantData(input = id)
                 restaurantRow = getRestaurantData(id)
                 #html
                 message = '<html><body>'
@@ -131,16 +128,15 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
 
-                self.wfile.write(testHTML.format(testFunc()).encode()) #.format html strings to input values that I want. These values can come from dtabase_connection's functions
-            else:
+                self.wfile.write(testHTML.format(testFunc()).encode())
                 self.send_error(404, 'File Not Found: %s' % self.path)
                 return
     def do_POST(self):
-        if self.path == '/restaurants/new': #Have to distinguis between forms coming from different parts of the server.
-            ctype, pdict = cgi.parse_header(self.headers.get('content-type')) #Type needs to be certain type so we can get pdict
-            pdict['boundary'] = pdict['boundary'].encode('utf-8') #pdict needs to be in bytes
-            fields = cgi.parse_multipart(self.rfile, pdict) #parse the input file based on dictionary of parameters
-            formRestaurant = fields['restaurantName'][0].decode('utf-8') #decode new restaurant name into string
+        if self.path == '/restaurants/new':
+            ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
+            pdict['boundary'] = pdict['boundary'].encode('utf-8')
+            fields = cgi.parse_multipart(self.rfile, pdict)
+            formRestaurant = fields['restaurantName'][0].decode('utf-8')
             addRestaurant(formRestaurant)
 
             #redirect to restaurants page
@@ -149,12 +145,10 @@ class WebServerHandler(BaseHTTPRequestHandler):
             self.end_headers()
 
         if re.search('restaurant/[0-9]*/edit',self.path):
-            #parse data using above method (or method from bookmark server).
-            ctype, pdict = cgi.parse_header(self.headers.get('content-type')) #Type needs to be certain type so we can get pdict
-            pdict['boundary'] = pdict['boundary'].encode('utf-8') #pdict needs to be in bytes
-            fields = cgi.parse_multipart(self.rfile, pdict) #parse the input file based on dictionary of parameters
-            #Decode and read the value of editedRestaurantName.
-            editedName = fields['editedRestaurantName'][0].decode('utf-8') #decode new restaurant name into string
+            ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
+            pdict['boundary'] = pdict['boundary'].encode('utf-8')
+            fields = cgi.parse_multipart(self.rfile, pdict)
+            editedName = fields['editedRestaurantName'][0].decode('utf-8')
             id = self.path[12:-5]
             try:
                 id = int(id)
@@ -163,17 +157,11 @@ class WebServerHandler(BaseHTTPRequestHandler):
             restaurant = getRestaurantData(id)
             restaurant.name = editedName
             commitData(restaurant)
-            #redirect to restaurant page with a 303 response (see above)
+
             self.send_response(303)
             self.send_header('location','/restaurants')
             self.end_headers()
-            # self.send_response(200)
-            # self.send_header('Content-type', 'text/html')
-            # self.end_headers()
-            # message = '<html><body>'
-            # message += '<h1>{}</h1>'.format(editedName)
-            # message += '</body></html>'
-            # self.wfile.write(message.encode())
+
 
 def main():
     try:
