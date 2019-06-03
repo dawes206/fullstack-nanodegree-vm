@@ -110,52 +110,12 @@ class WebServerHandler(BaseHTTPRequestHandler):
         pdict['boundary'] = pdict['boundary'].encode('utf-8') #pdict needs to be in bytes
         fields = cgi.parse_multipart(self.rfile, pdict) #parse the input file based on dictionary of parameters
         formRestaurant = fields['restaurantName'][0].decode('utf-8') #decode new restaurant name into string
-
         addRestaurant(formRestaurant)
-
 
         #redirect to restaurants page
         self.send_response(303)
         self.send_header('location','/restaurants')
         self.end_headers()
-
-        # self.send_response(200)
-        # self.send_header('content-type','text/html')
-        # self.end_headers()
-        # message = ""
-        # message += "<html><body>"
-        # # message += "<h1> %s </h1>" % form['name'].value
-        # # message += "<h1>%s</h1>" %self.headers.get('content-type')
-        # # message += "<h1>%s</h1>" %self.rfile.read(int(self.headers.get('content-length'))).decode()
-        # message += "<h1>%s</h1>"
-        # message += "</body></html>"
-        # self.wfile.write(message.encode())
-
-
-
-
-
-
-
-        # try:
-        #     self.send_response(200)
-        #     self.send_header('content-type','text/html')
-        #     self.end_headers()
-        #
-        #     ctype, pdict = cgi.parse_header(self.headers.get('content-type'))
-        #     pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
-        #     if ctype == 'multipart/form-data':
-        #         fields = cgi.parse_multipart(self.rfile, pdict)
-        #         messagecontent =fields.get('message')
-        #         message = ""
-        #         message += "<html><body>"
-        #         message += " <h2> Okay, how about this: </h2>"
-        #         message += "<h1> %s </h1>" % messagecontent[0].decode('utf-8')
-        #         message += '''<form method='POST' enctype='multipart/form-data' action='/hello'><h2>What would you like me to say?</h2><input name="message" type="text" ><input type="submit" value="Submit"> </form>'''
-        #         message += "</body></html>"
-        #     self.wfile.write(message.encode())
-        # except:
-        #     pass
 
 
 def main():
