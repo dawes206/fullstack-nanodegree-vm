@@ -16,7 +16,8 @@ from os import curdir, sep
 from database_connection import testFunc
 from database_connection import getRestaurantNames
 from database_connection import addRestaurant
-from databse_connection import getRestaurantData
+from database_connection import getRestaurantData
+from database_connection import getRestaurants
 
 
 testHTML = '''<html>
@@ -55,14 +56,16 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.end_headers()
                 return
             if self.path == '/restaurants':
-                restaurantNames = getRestaurantNames()
+                restaurantNames = getRestaurantNames() #good for when you just need a list of restaurant names (objective 1).
+
+                restaurants = getRestaurants() #good for when you need restaurant names and id's (objective 4)
 
                 message = ''
                 message += '<html><body>'
-                for i in restaurantNames:
-                    message += '<p>{}</p>'.format(i)
-                    message += '<a href =/restaurant/id/edit>Edit </a>' #id can be changed to a {} and filled in with the database id number of the restaurant.
-                    message += '<a href =/restaurant/id/delete>Delete</a>'
+                for restaurant in restaurants:
+                    message += '<p>{}</p>'.format(restaurant.name)
+                    message += '<a href =/restaurant/{}/edit>Edit </a>'.format(restaurant.id) #id can be changed to a {} and filled in with the database id number of the restaurant.
+                    message += '<a href =/restaurant/{}/delete>Delete</a>'.format(restaurant.id)
                 message += '<br/>'
                 message += '<a href = /restaurants/new>New Restaurant</a>'
                 message += '</body></html>'
