@@ -17,7 +17,7 @@ from database_connection import testFunc
 from database_connection import getRestaurantNames
 from database_connection import addRestaurant
 
-#html will have {} where I want to insert values
+
 testHTML = '''<html>
   <body>
     <h1>Hello!</h1>
@@ -55,8 +55,6 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 return
             if self.path == '/restaurants':
                 restaurantNames = getRestaurantNames()
-                # restaurantNamesString = '\n'.join(restaurantNames)
-                print('test')
 
                 message = ''
                 message += '<html><body>'
@@ -64,20 +62,20 @@ class WebServerHandler(BaseHTTPRequestHandler):
                     message += '<p>{}</p>'.format(i)
                     message += '<a href =/restaurant/id/edit>Edit </a>'
                     message += '<a href =/restaurant/id/delete>Delete</a>'
+                message += '<br/>'
+                message += '<a href = /restaurants/new>New Restaurant</a>'
                 message += '</body></html>'
 
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                # self.wfile.write(restaurantsHTML.format(restaurantNamesString).encode())
+
                 self.wfile.write(message.encode())
                 return
             if self.path == '/restaurants/new':
                 self.send_response(200)
                 self.send_header('Content-type', 'text/html')
                 self.end_headers()
-                # test = open('new_restaurants.html')
-                #self.wfile.write(test.read().encode())
                 self.wfile.write(newRestaurantsHTML.encode())
 
 
@@ -103,10 +101,8 @@ class WebServerHandler(BaseHTTPRequestHandler):
             else:
                 self.send_error(404, 'File Not Found: %s' % self.path)
                 return
-    #Trying to get do_POST to actually work. It doesn't seem to be doing anything, but I think that's because I don't really understand what happense when I submit a form
     def do_POST(self):
         ctype, pdict = cgi.parse_header(self.headers.get('content-type')) #Type needs to be certain type so we can get pdict
-        # pdict['boundary'] = bytes(pdict['boundary'], "utf-8")
         pdict['boundary'] = pdict['boundary'].encode('utf-8') #pdict needs to be in bytes
         fields = cgi.parse_multipart(self.rfile, pdict) #parse the input file based on dictionary of parameters
         formRestaurant = fields['restaurantName'][0].decode('utf-8') #decode new restaurant name into string
