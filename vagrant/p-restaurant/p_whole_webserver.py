@@ -103,7 +103,7 @@ class WebServerHandler(BaseHTTPRequestHandler):
                 self.send_error(404, 'File Not Found: %s' % self.path)
                 return
     #Trying to get do_POST to actually work. It doesn't seem to be doing anything, but I think that's because I don't really understand what happense when I submit a form
-    def do_POST():
+    def do_POST(self):
         form = cgi.FieldStorage()
         self.send_response(200)
         self.send_header('content-type','text/html')
@@ -140,8 +140,6 @@ class WebServerHandler(BaseHTTPRequestHandler):
         #     self.wfile.write(message.encode())
         # except:
         #     pass
-
-
 
 
 def main():
