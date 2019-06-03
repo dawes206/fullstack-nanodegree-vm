@@ -45,3 +45,7 @@ def getRestaurantData(input):
     elif type(input) == int:
         restaurant = session.query(Restaurant).filter_by(id=input).one()
         return restaurant
+
+def commitData(object):
+    session.add(object)
+    session.commit()
