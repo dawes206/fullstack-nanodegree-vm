@@ -3,3 +3,4 @@ restaurant_tables.xlsx
 vagrant_up_output
 /vagrant/p-restaurant/__pycache__/
 /vagrant/p-flask/__pycache__/
+/vagrant/flaskApplication/__pycache__/
