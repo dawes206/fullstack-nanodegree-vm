@@ -41,7 +41,7 @@ def showMenu(restaurantID):
     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
     items = session.query(MenuItem).filter_by(restaurant_id = restaurantID).all()
     if not items:
-        return "No menu items in database"
+        return render_template('menu.html', restaurant = restaurant, items = items)
     else:
         return render_template('menu.html', restaurant = restaurant, items = items)
 
