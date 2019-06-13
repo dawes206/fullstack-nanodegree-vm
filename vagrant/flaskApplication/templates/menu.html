@@ -2,25 +2,21 @@
 <html>
   <body>
     <div>
-      <h1>Restaurant Name</h1>
+      <h1>{{restaurant.name}}</h1>
       <a href=''>Edit Info. restaurantname/edit</a>
       <a href=''>Delete Restaurant. restaurantname/delete</a>
       </br>
-      <p>Item Name ... <span>Price</span></p>
+
+      {% for i in items %}
+
       <p>
-        restaurant description. <a href=''>edit. restaurantname/menu/id/edit</a> <a href=''>delete</a>
+        {{i.name}} ... <span>{{i.price}}</span>
       </p>
+      <p>{{i.description}} <a href=''>edit. restaurantname/menu/id/edit</a> <a href=''>delete</a> </p>
       </br>
-      <p>Item Name ... <span>Price</span></p>
-      <p>
-        restaurant description. <a href=''>edit</a> <a href=''>delete. restaurantname/menu/id/delete</a>
-      </p>
-      </br>
-      <p>Item Name ... <span>Price</span></p>
-      <p>
-        restaurant description. <a href=''>edit</a> <a href=''>delete</a>
-      </p>
-      </br>
+
+      {% endfor %}
+
       <a href=''>Add New Item. restaurantname/menu/addnewitem</a>
     </div>
   </body>

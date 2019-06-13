@@ -2,23 +2,17 @@
   <body>
     <div>
       <h3>Home page with all restaurants</h3>
-      <a href = ''>Restaurant Name. restaurantname/menu </a>
-      <p>
-        restaurant description
-        </p>
-        </br>
 
-      <a href = ''>Restaurant Name</a>
-      <p>
-        restaurant description
-        </p>
-        </br>
+      {% for rest in restaurants %}
 
-      <a href = ''>Restaurant Name</a>
+      <a href = ''>{{rest.name}} restaurantname/menu</a>
       <p>
-        restaurant description
-      </p>
+        {{rest.description}}
+        </p>
       </br>
+
+      {% endfor %}
+
       <a href=''>Add New Restaurant. /addrestaurant</a>
     </div>
   </body>
