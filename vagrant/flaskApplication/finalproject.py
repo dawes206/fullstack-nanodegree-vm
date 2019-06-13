@@ -33,11 +33,11 @@ def addRestaurant():
 
 @app.route('/<string:restaurantName>/menu/<int:itemID>/edit')
 def editMenuItem(restaurantName,itemID):
-    return render_template('editmenuitem.html')
+    return render_template('editmenuitem.html', item = item)
 
 @app.route('/<string:restaurantName>/menu/<int:itemID>/delete')
 def deleteMenuItem(restaurantName,itemID):
-    return render_template('deletemenuitem.html')
+    return render_template('deletemenuitem.html', item = item)
 
 @app.route('/<string:restaurantName>/menu/addnewitem')
 def AddMenuItem(restaurantName):

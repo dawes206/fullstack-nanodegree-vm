@@ -4,11 +4,11 @@
     <div>
       <h3>Edit Menu Item Page</h3>
       <form target='' method='POST'>
-        <input type=text name = newName value = 'Menu Item Name' />
+        <input type=text name = newName value = '{{item.name}}' />
         </br>
-        <input type=text name = newDesc value = 'Item Price' />
+        <input type=text name = newDesc value = '{{item.price}}' />
         </br>
-        <input type=text name = newDesc value = 'Item Description' />
+        <input type=text name = newDesc value = '{{item.description}}' />
         </br>
         <input type=submit value='Submit' />
         <a href = ''>Cancel. restaurantname/menu</a>

@@ -5,7 +5,7 @@
 
       {% for rest in restaurants %}
 
-      <a href = ''>{{rest.name}} restaurantname/menu</a>
+      <a href = "{{ url_for('showMenu',restaurantName = rest.name) }}">{{rest.name}} restaurantname/menu</a>
       <p>
         {{rest.description}}
         </p>
@@ -13,7 +13,7 @@
 
       {% endfor %}
 
-      <a href=''>Add New Restaurant. /addrestaurant</a>
+      <a href={{url_for('addRestaurant')}}>Add New Restaurant. /addrestaurant</a>
     </div>
   </body>
 </html>
