@@ -1,4 +1,4 @@
-<!-- restaurantname/menu/addnewitem -->
+<!-- restaurantID/menu/addnewitem -->
 <html>
   <body>
     <div>
@@ -11,7 +11,7 @@
         <input type=text name = newDesc value = 'New Item Price' />
         </br>
         <input type=submit value='Submit' />
-        <a href = "{{url_for('showMenu', restaurantName = restaurant.name)}}">Cancel</a>
+        <a href = "{{url_for('showMenu', restaurantID = restaurant.id)}}">Cancel</a>
         </form>
     </div>
   </body>

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
 
@@ -26,48 +26,55 @@ item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$
 
 @app.route('/')
 def home():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    restaurants = session.query(Restaurant).all()
     if not restaurants:
         return "No restaurants in database"
     else:
         return render_template('home.html', restaurants = restaurants)
 
-@app.route('/<string:restaurantName>/menu')
-def showMenu(restaurantName):
+@app.route('/<int:restaurantID>/menu')
+def showMenu(restaurantID):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
+    items = session.query(MenuItem).filter_by(restaurant_id = restaurantID).all()
     if not items:
         return "No menu items in database"
     else:
         return render_template('menu.html', restaurant = restaurant, items = items)
 
-@app.route('/<string:restaurantName>/edit', methods = ['GET', 'POST'])
-def editRestaurant(restaurantName):
+@app.route('/<int:restaurantID>/edit', methods = ['GET', 'POST'])
+def editRestaurant(restaurantID):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    restaurant = session.query(Restaurant).filter_by(name = restaurantName).one()
+    restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
     if request.method == 'POST':
         restaurant.name = request.form['newName']
         restaurant.description = request.form['newDesc']
         session.add(restaurant)
         session.commit()
-        return redirect(url_for(home))
+        return redirect(url_for('home'))
     else:
         return render_template('editrestaurant.html', restaurant = restaurant)
 
-@app.route('/<string:restaurantName>/delete', methods = ['GET', 'POST'])
-def deleteRestaurant(restaurantName):
+@app.route('/<int:restaurantID>/delete', methods = ['GET', 'POST'])
+def deleteRestaurant(restaurantID):
     return render_template('deleterestaurant.html',  restaurant = restaurant)
 
 @app.route('/addrestaurant')
 def addRestaurant():
     return render_template('addrestaurant.html', methods = ['GET', 'POST'])
 
-@app.route('/<string:restaurantName>/menu/<int:itemID>/edit', methods = ['GET', 'POST'])
-def editMenuItem(restaurantName,itemID):
+@app.route('/<int:restaurantID>/menu/<int:itemID>/edit', methods = ['GET', 'POST'])
+def editMenuItem(restaurantID,itemID):
     return render_template('editmenuitem.html', restaurant = restaurant, item = item)
 
-@app.route('/<string:restaurantName>/menu/<int:itemID>/delete', methods = ['GET', 'POST'])
-def deleteMenuItem(restaurantName,itemID):
+@app.route('/<int:restaurantID>/menu/<int:itemID>/delete', methods = ['GET', 'POST'])
+def deleteMenuItem(restaurantID,itemID):
     return render_template('deletemenuitem.html', restaurant = restaurant, item = item)
 
-@app.route('/<string:restaurantName>/menu/addnewitem', methods = ['GET', 'POST'])
-def addMenuItem(restaurantName):
+@app.route('/<int:restaurantID>/menu/addnewitem', methods = ['GET', 'POST'])
+def addMenuItem(restaurantID):
     return render_template('newmenuitem.html', restaurant = restaurant)

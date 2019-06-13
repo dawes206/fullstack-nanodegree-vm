@@ -11,6 +11,7 @@ class Restaurant(Base):
 
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key=True)
+    description = Column(String(100), nullable = True)
 
 class MenuItem(Base, ):
     __tablename__ = 'menu_item'
