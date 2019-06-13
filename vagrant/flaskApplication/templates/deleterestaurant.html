@@ -6,7 +6,7 @@
       <form target='' method='POST'>
         </br>
         <input type=submit value="I'm sure" />
-        <a href = ''>Cancel. restaurantname/menu</a>
+        <a href = "{{url_for('showMenu', restaurantName = restaurant.name)}}">Cancel</a>
         </form>
     </div>
   </body>

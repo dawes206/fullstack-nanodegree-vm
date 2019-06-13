@@ -3,8 +3,8 @@
   <body>
     <div>
       <h1>{{restaurant.name}}</h1>
-      <a href=''>Edit Info. restaurantname/edit</a>
-      <a href=''>Delete Restaurant. restaurantname/delete</a>
+      <a href="{{ url_for('editRestaurant',restaurantName = restaurant.name) }}">Edit Info</a>
+      <a href='{{ url_for('deleteRestaurant',restaurantName = restaurant.name)}}'>Delete Restaurant</a>
       </br>
 
       {% for i in items %}
@@ -12,12 +12,18 @@
       <p>
         {{i.name}} ... <span>{{i.price}}</span>
       </p>
-      <p>{{i.description}} <a href=''>edit. restaurantname/menu/id/edit</a> <a href=''>delete</a> </p>
+      <p>{{i.description}}
+        <a href="{{url_for('editMenuItem', restaurantName = restaurant.name, itemID =i.id)}}">edit</a>
+        <a href="{{url_for('deleteMenuItem', restaurantName = restaurant.name, itemID =i.id)}}">delete</a>
+      </p>
       </br>
 
       {% endfor %}
 
-      <a href=''>Add New Item. restaurantname/menu/addnewitem</a>
+      <a href="{{url_for('addMenuItem', restaurantName = restaurant.name)}}">Add New Item</a>
+      </br>
+      </br>
+      <a href="{{url_for('home')}}">Back to Restaurant List</a>
     </div>
   </body>
 </html>

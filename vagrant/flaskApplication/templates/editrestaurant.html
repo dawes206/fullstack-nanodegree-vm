@@ -3,13 +3,13 @@
   <body>
     <div>
       <h3>Edit Restaurant Info Page</h3>
-      <form target='' method='POST'>
+      <form target="{{url_for('editRestaurant', restaurantName = restaurant.name)}}" method='POST'>
         <input type=text name = newName value = "{{restaurant.name}}" />
         </br>
         <input type=text name = newDesc value = "{{restaurant.description}}" />
         </br>
         <input type=submit value='Submit' />
-        <a href = ''>Cancel. restaurantname/menu</a>
+        <a href = "{{url_for('showMenu', restaurantName = restaurant.name)}}">Cancel</a>
         </form>
     </div>
   </body>

@@ -11,7 +11,7 @@
         <input type=text name = newDesc value = 'New Item Price' />
         </br>
         <input type=submit value='Submit' />
-        <a href = ''>Cancel. restaurantname/menu</a>
+        <a href = "{{url_for('showMenu', restaurantName = restaurant.name)}}">Cancel</a>
         </form>
     </div>
   </body>
