@@ -66,7 +66,7 @@ def deleteRestaurant(restaurantID):
     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
     if request.method == 'POST':
         session.delete(restaurant)
-        session.commit
+        session.commit()
         return redirect(url_for('home'))
     else:
         return render_template('deleterestaurant.html',  restaurant = restaurant)
