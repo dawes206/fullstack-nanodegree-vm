@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 app = Flask(__name__)
 
 
@@ -40,8 +40,15 @@ def showMenu(restaurantName):
 
 @app.route('/<string:restaurantName>/edit', methods = ['GET', 'POST'])
 def editRestaurant(restaurantName):
-    if request.method = 'POST':
-
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    restaurant = session.query(Restaurant).filter_by(name = restaurantName).one()
+    if request.method == 'POST':
+        restaurant.name = request.form['newName']
+        restaurant.description = request.form['newDesc']
+        session.add(restaurant)
+        session.commit()
+        return redirect(url_for(home))
     else:
         return render_template('editrestaurant.html', restaurant = restaurant)
 
