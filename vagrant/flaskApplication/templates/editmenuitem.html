@@ -3,7 +3,7 @@
   <body>
     <div>
       <h3>Edit Menu Item Page</h3>
-      <form target="{{url_for('editMenuItem', restaurantID = restaurant.id, itemID =item.id)}}" method='POST'>
+      <form action="{{url_for('editMenuItem', restaurantID = restaurant.id, itemID =item.id)}}" method='POST'>
         <input type=text name = newName value = '{{item.name}}' />
         </br>
         <input type=text name = newPrice value = '{{item.price}}' />

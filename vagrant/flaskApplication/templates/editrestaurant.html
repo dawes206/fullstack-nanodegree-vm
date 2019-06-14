@@ -3,7 +3,7 @@
   <body>
     <div>
       <h3>Edit Restaurant Info Page</h3>
-      <form target="{{url_for('editRestaurant', restaurantID = restaurant.id)}}" method='POST'>
+      <form action="{{url_for('editRestaurant', restaurantID = restaurant.id)}}" method='POST'>
         <input type=text name = newName value = "{{restaurant.name}}" />
         </br>
         <input type=text name = newDesc value = "{{restaurant.description}}" />

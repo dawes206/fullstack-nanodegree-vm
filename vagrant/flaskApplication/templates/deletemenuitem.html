@@ -3,7 +3,7 @@
   <body>
     <div>
       <h3>Are you sure you want to delete {{item.name}}?</h3>
-      <form target='' method='POST'>
+      <form action="{{url_for('deleteMenuItem', restaurantID = restaurant.id, itemID = item.id)}}" method='POST'>
         </br>
         <input type=submit value="I'm sure" />
         <a href = "{{url_for('showMenu', restaurantID = restaurant.id)}}">Cancel</a>
