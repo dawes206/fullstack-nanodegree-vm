@@ -13,6 +13,15 @@ class Restaurant(Base):
     id = Column(Integer, primary_key=True)
     description = Column(String(100), nullable = True)
 
+    @property
+    def serialize(self):
+        #returns object data in easily seializable format
+        return {
+                'name': self.name,
+                'description': self.description,
+                'id': self.id
+            }
+
 class MenuItem(Base, ):
     __tablename__ = 'menu_item'
 

@@ -1,6 +1,6 @@
 #Next thing you're working on is edit menu item and delte menu item. Then you should be done with this iteration in the lesson
 
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, jsonify
 app = Flask(__name__)
 
 
@@ -125,3 +125,19 @@ def addMenuItem(restaurantID):
         return redirect(url_for('showMenu', restaurantID = restaurantID))
     else:
         return render_template('newmenuitem.html', restaurant = restaurant)
+
+@app.route('/JSON')
+def getRestaurantsJSON():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    restaurants = session.query(Restaurant).all()
+    return jsonify([rest.serialize for rest in restaurants])
+
+@app.route('/<int:restaurantID>/menu/JSON')
+def getMenuJSON():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+@app.route('/<int:restaurantID>/menu/<int:itemID>/JSON')
+def getItemJSON():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
