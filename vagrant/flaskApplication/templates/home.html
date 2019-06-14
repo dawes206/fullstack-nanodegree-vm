@@ -6,9 +6,12 @@
       {% for rest in restaurants %}
 
       <a href = "{{ url_for('showMenu',restaurantID = rest.id) }}">{{rest.name}}</a>
+    </br>
+      <a href="{{ url_for('editRestaurant',restaurantID = rest.id) }}">edit</a>
+      <a href='{{ url_for('deleteRestaurant',restaurantID = rest.id)}}'>delete</a>
       <p>
         {{rest.description}}
-        </p>
+      </p>
       </br>
 
       {% endfor %}
