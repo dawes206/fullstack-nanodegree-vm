@@ -3,10 +3,10 @@
   <body>
     <div>
       <h3>Edit Menu Item Page</h3>
-      <form target='' method='POST'>
+      <form target="{{url_for('editMenuItem', restaurantID = restaurant.id, itemID =item.id)}}" method='POST'>
         <input type=text name = newName value = '{{item.name}}' />
         </br>
-        <input type=text name = newDesc value = '{{item.price}}' />
+        <input type=text name = newPrice value = '{{item.price}}' />
         </br>
         <input type=text name = newDesc value = '{{item.description}}' />
         </br>

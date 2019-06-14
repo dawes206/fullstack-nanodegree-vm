@@ -1,3 +1,5 @@
+#Next thing you're working on is edit menu item and delte menu item. Then you should be done with this iteration in the lesson
+
 from flask import Flask, render_template, request, redirect, url_for
 app = Flask(__name__)
 
@@ -85,7 +87,19 @@ def addRestaurant():
 
 @app.route('/<int:restaurantID>/menu/<int:itemID>/edit', methods = ['GET', 'POST'])
 def editMenuItem(restaurantID,itemID):
-    return render_template('editmenuitem.html', restaurant = restaurant, item = item)
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
+    item = session.query(MenuItem).filter_by(id = itemID).one()
+    if request.method == 'POST':
+        item.name = request.form['newName']
+        item.price = request.form['newPrice']
+        item.description = request.form['newDesc']
+        session.add(item)
+        session.commit()
+        return redirect(url_for('showMenu',restaurantID = restaurant.id))
+    else:
+        return render_template('editmenuitem.html', restaurant = restaurant, item = item)
 
 @app.route('/<int:restaurantID>/menu/<int:itemID>/delete', methods = ['GET', 'POST'])
 def deleteMenuItem(restaurantID,itemID):
