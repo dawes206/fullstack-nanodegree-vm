@@ -9,7 +9,8 @@
 
       {% for rest in restaurants %}
       <div align=center class=restaurant>
-        <img src="/static/burger_stand.jpg" style="width:90px;height:90px" alt="Italian Trulli">
+        <!-- <img src="/static/burger_stand.jpg" style="width:90px;height:90px" alt="Italian Trulli"> -->
+        <img src={{rest.image}} style="width:90px;height:90px" alt="Italian Trulli">
         <a href = "{{ url_for('showMenu',restaurantID = rest.id) }}">{{rest.name}}</a>
         </br>
         <a href="{{ url_for('editRestaurant',restaurantID = rest.id) }}">edit</a>

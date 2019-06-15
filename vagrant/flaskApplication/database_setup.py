@@ -12,6 +12,7 @@ class Restaurant(Base):
     name = Column(String(80), nullable = False)
     id = Column(Integer, primary_key=True)
     description = Column(String(100), nullable = True)
+    image = Column(String(30), nullable = True)
 
     @property
     def serialize(self):

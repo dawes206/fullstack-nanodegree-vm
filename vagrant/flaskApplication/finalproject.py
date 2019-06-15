@@ -55,6 +55,7 @@ def editRestaurant(restaurantID):
     if request.method == 'POST':
         restaurant.name = request.form['newName']
         restaurant.description = request.form['newDesc']
+        restaurant.image = r"/static/"+request.form['newPic']
         session.add(restaurant)
         session.commit()
         return redirect(url_for('home'))
