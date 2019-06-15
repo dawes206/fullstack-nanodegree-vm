@@ -1,22 +1,29 @@
 <html>
+<head>
+  <link rel = "stylesheet" type =text/css href = {{url_for('static',filename='styles.css')}}  />
+  <script type=text/javascript src="{{url_for('static', filename='jquery-3.4.1.js') }}"></script>
+</head>
   <body>
     <div>
-      <h3>Home page with all restaurants</h3>
+      <h3>Restaurants</h3>
 
       {% for rest in restaurants %}
-
-      <a href = "{{ url_for('showMenu',restaurantID = rest.id) }}">{{rest.name}}</a>
-    </br>
-      <a href="{{ url_for('editRestaurant',restaurantID = rest.id) }}">edit</a>
-      <a href='{{ url_for('deleteRestaurant',restaurantID = rest.id)}}'>delete</a>
-      <p>
-        {{rest.description}}
-      </p>
-      </br>
+      <div align=center class=restaurant>
+        <img src="/static/burger_stand.jpg" style="width:90px;height:90px" alt="Italian Trulli">
+        <a href = "{{ url_for('showMenu',restaurantID = rest.id) }}">{{rest.name}}</a>
+        </br>
+        <a href="{{ url_for('editRestaurant',restaurantID = rest.id) }}">edit</a>
+        <a href='{{ url_for('deleteRestaurant',restaurantID = rest.id)}}'>delete</a>
+        <p>
+          {{rest.description}}
+        </p>
+        </br>
+    </div>
 
       {% endfor %}
 
       <a href={{url_for('addRestaurant')}}>Add New Restaurant</a>
     </div>
+    <script type=text/javascript src = "{{url_for('static', filename='restaurantController.js') }}"></script>
   </body>
 </html>

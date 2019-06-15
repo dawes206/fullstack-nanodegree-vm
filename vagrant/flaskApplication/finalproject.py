@@ -116,9 +116,10 @@ def deleteMenuItem(restaurantID,itemID):
 
 @app.route('/<int:restaurantID>/menu/addnewitem', methods = ['GET', 'POST'])
 def addMenuItem(restaurantID):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
     if request.method == 'POST':
-        DBSession = sessionmaker(bind=engine)
-        session = DBSession()
         newItem = MenuItem(name = request.form['newName'], price = request.form['newPrice'], description = request.form['newDesc'], restaurant_id = restaurantID)
         session.add(newItem)
         session.commit()

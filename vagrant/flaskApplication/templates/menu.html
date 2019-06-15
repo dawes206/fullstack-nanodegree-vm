@@ -1,8 +1,17 @@
 <!-- URL: restaurantID/menu -->
 <html>
+  <head>
+    <script type=text/javascript src="{{url_for('static', filename='jquery-3.4.1.js') }}"></script>
+    <script>
+      console.log('JS is working')
+    </script>
+    <!-- <script type=text/javascript src = "{{url_for('static', filename='menuController.js') }}"></script> -->
+    <!-- <script type=text/javascript src = "{{url_for('static', filename='menuController.js') }}"></script> -->
+  </head>
   <body>
     <div>
-      <h1>{{restaurant.name}}</h1>
+      <h1 style="color:blue" class='test'>{{restaurant.name}}</h1>
+      <!-- <h2>{{url_for('static', filename='menuController.js') }}</h2> -->
       <p>
         {{restaurant.description}}
       </p>
@@ -27,5 +36,6 @@
       </br>
       <a href="{{url_for('home')}}">Back to Restaurant List</a>
     </div>
+    <script type=text/javascript src = "{{url_for('static', filename='menuController.js') }}"></script>
   </body>
 </html>
