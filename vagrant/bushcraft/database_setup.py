@@ -33,7 +33,7 @@ class Items(Base, ):
     volume = Column(Float)
     amount = Column(Integer)
     packed = Column(Boolean)
-    user_id = Column(Integer, ForeignKey('users.id'))
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship(User)
 
     # @property

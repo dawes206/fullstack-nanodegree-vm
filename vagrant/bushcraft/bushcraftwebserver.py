@@ -1,5 +1,14 @@
 #Next thing you're working on is edit menu item and delte menu item. Then you should be done with this iteration in the lesson
 
+# from sqlalchemy import create_engine
+# from sqlalchemy.orm import sessionmaker
+# from database_setup import Base, User, Items
+# engine = create_engine("sqlite:///bushcrafting.db")
+# Base.metadata.bind = create_engine
+# DBSession = sessionmaker(bind=engine)
+# session = DBSession()
+
+
 from flask import Flask, render_template, request, redirect, url_for, jsonify
 app = Flask(__name__)
 
@@ -24,6 +33,8 @@ user1 = {'name': 'Silas', 'id': '1'}
 # items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
 item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8'}
 
+manualID = 1
+
 # items = []
 
 @app.route('/')
@@ -39,7 +50,10 @@ def home():
 
 @app.route('/mygear')
 def showGear():
-    return render_template('mygear.html')
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    items = session.query(Items).filter_by(user_id=manualID).all()
+    return render_template('mygear.html', items = items)
 @app.route('/mypack')
 def showPack():
     return render_template('mypack.html')

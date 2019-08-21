@@ -8,6 +8,9 @@
       <li><input type="checkbox">knife...lbs...L</li>
       <li><input type="checkbox">knife...lbs...L</li>
       </li>
+    {%for i in items%}
+    <li><input type="checkbox">{{i.name}}...lbs...L</li>
+    {%endfor%}
     </ul>
     <button>+ subcategory</button>
     <button>+ item</button>
