@@ -6,29 +6,29 @@ app = Flask(__name__)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-# from database_setup import Base, Restaurant, MenuItem
+from database_setup import Base, User, Items
 
-# engine = create_engine('sqlite:///restaurantmenu.db')
-# Base.metadata.bind = create_engine
+engine = create_engine('sqlite:///bushcrafting.db')
+Base.metadata.bind = create_engine
 #
-# DBSession = sessionmaker(bind=engine)
-# session = DBSession()
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
-# #Fake Restaurants
-# restaurant = {'name': 'The CRUDdy Crab', 'id': '1', 'description':'good crab'}
-#
+#Fake User
+user1 = {'name': 'Silas', 'id': '1'}
+
 # restaurants = [{'name': 'The CRUDdy Crab', 'id': '1', 'description':'good crab'}, {'name':'Blue Burgers', 'id':'2', 'description':'great burger'},{'name':'Taco Hut', 'id':'3', 'description':'best tacos'}]
-# # restaurants = []
+# restaurants = []
 #
-# #Fake Menu Items
+#Fake Items
 # items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
-# item =  {'name':'Cheese Pizza','description':'made with fresh cheese','price':'$5.99','course' :'Entree'}
+item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8'}
 
 # items = []
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    return render_template('mygear.html')
     # DBSession = sessionmaker(bind=engine)
     # session = DBSession()
     # restaurants = session.query(Restaurant).all()
@@ -36,6 +36,18 @@ def home():
     #     return "No restaurants in database"
     # else:
     #     return render_template('home.html', restaurants = restaurants)
+
+@app.route('/mypack')
+def showPack():
+    return render_template('mypack.html')
+
+@app.route('/mygear/edit')
+def editGear():
+    return render_template('mypackedit.html')
+
+@app.route('/<int:itemID>/edit')
+def editItem(itemID):
+    return render_template('itemedit.html')
 
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):
