@@ -28,7 +28,7 @@ item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8
 
 @app.route('/')
 def home():
-    return render_template('mygear.html')
+    return render_template('welcome.html')
     # DBSession = sessionmaker(bind=engine)
     # session = DBSession()
     # restaurants = session.query(Restaurant).all()
@@ -37,6 +37,9 @@ def home():
     # else:
     #     return render_template('home.html', restaurants = restaurants)
 
+@app.route('/mygear')
+def showGear():
+    return render_template('mygear.html')
 @app.route('/mypack')
 def showPack():
     return render_template('mypack.html')
