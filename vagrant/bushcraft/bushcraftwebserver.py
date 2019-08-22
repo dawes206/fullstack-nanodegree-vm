@@ -64,7 +64,10 @@ def editGear():
 
 @app.route('/<int:itemID>/edit')
 def editItem(itemID):
-    return render_template('itemedit.html')
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()
+    return render_template('itemedit.html', item = item)
 
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):
