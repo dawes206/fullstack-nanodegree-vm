@@ -1,5 +1,7 @@
 #Next thing you're working on is edit menu item and delte menu item. Then you should be done with this iteration in the lesson
 
+#Next thing I need to do is figure out how to sign out of google, that way I can test, step by step, what lorenzo is doing. What I want to test next is that the ajax call is working properly, by making a console.log, or similar, in the gconnect section of this file.
+
 # from sqlalchemy import create_engine
 # from sqlalchemy.orm import sessionmaker
 # from database_setup import Base, User, Items
@@ -20,6 +22,15 @@ from database_setup import Base, User, Items
 
 from flask import session as login_session
 import random, string
+
+from oauth2client.client import flow_from_clientsecrets
+from oauth2client.client import FlowExchangeError
+import httplib2
+import json
+from flask import make_response
+import requests
+
+CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_id']
 
 engine = create_engine('sqlite:///bushcrafting.db')
 Base.metadata.bind = create_engine
@@ -46,7 +57,7 @@ def home():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
     # return "current session is %s" %login_session["state"]
-    return render_template('welcome.html')
+    return render_template('welcome.html', STATE = state)
     # DBSession = sessionmaker(bind=engine)
     # session = DBSession()
     # restaurants = session.query(Restaurant).all()
@@ -75,6 +86,14 @@ def editItem(itemID):
     session = DBSession()
     item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()
     return render_template('itemedit.html', item = item)
+
+@app.route('/gconnect', methods=['POST'])
+def googleLogin():
+    # if request.method == 'POST':
+    #     return redirect("/mypack")
+    response = make_response(json.dumps({'success':True}), 200)
+    response.headers['Content-Type'] = 'application.json'
+    return response
 
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):

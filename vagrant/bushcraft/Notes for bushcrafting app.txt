@@ -1,0 +1,17 @@
+Spent forever trying to figure out hwo to make the dang redirect work for the ajax.
+
+At first, the issue was that I didn't import the ajax library into my html. Dumb
+
+Next up, there seems to be a disconnect between what the instructor wants the sign in button to return and what google's default getting started template gives. Fixed this just by ignorming whaat the instructor may want for now.
+
+Finally I confirmed that my ajax requestr was posting to my app succesffully. I tried using a redirect in gconnect to load mygear page. However, even though all the redirecting was working in the network tab, no new screen was ever displayed.
+
+Found something online that suggested to do it from the ajax side, instead of the flask side. In other words, I guess that the ajax request was waiting for a response, and that response WAS the redirect I was trying to do. So, my redirect was being used as a response, not an actual action for the browser to do. So, instead, I made flask send a response to the ajax request, and made ajax move the user along to the proper screen.
+
+
+So, the login button is "working", in that when users press it and log in, they will be directed to my home page. But, now I have to incorporate all the security features lorenzo mentioned. But, hopefully that won't be TOOOOO bad.
+After that facebook login (which should hopefully be in a similar veign to google)
+After that it will be on to some more logic for my app, incorporating the user session to let them see only their stuff.
+Then logout
+Then make it pretty
+
