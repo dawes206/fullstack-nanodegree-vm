@@ -11,7 +11,7 @@
 # session = DBSession()
 
 
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
@@ -89,11 +89,18 @@ def editItem(itemID):
 
 @app.route('/gconnect', methods=['POST'])
 def googleLogin():
+    if request.args.get('state') != login_session['state']: #check and see if the session state originally assigned to the user is the same as what we're getting from this login request
+        output = "<h1>didn't works</h1>"
+        response = make_response(json.dumps('invalid state parameter'), 401)
+        response.headers['Content-Type'] = 'application.json'
+        return response
+    else:
+        output = "<h1>it work</h1>"
     # if request.method == 'POST':
     #     return redirect("/mypack")
     response = make_response(json.dumps({'success':True}), 200)
     response.headers['Content-Type'] = 'application.json'
-    return response
+    return output
 
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):
