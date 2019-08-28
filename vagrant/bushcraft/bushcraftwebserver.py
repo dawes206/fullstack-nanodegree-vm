@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 #Next thing you're working on is edit menu item and delte menu item. Then you should be done with this iteration in the lesson
 
 #Next thing I need to do is figure out how to sign out of google, that way I can test, step by step, what lorenzo is doing. What I want to test next is that the ajax call is working properly, by making a console.log, or similar, in the gconnect section of this file.
@@ -94,13 +96,30 @@ def googleLogin():
         response = make_response(json.dumps('invalid state parameter'), 401)
         response.headers['Content-Type'] = 'application.json'
         return response
-    else:
-        output = "<h1>it work</h1>"
-    # if request.method == 'POST':
-    #     return redirect("/mypack")
+    code = request.data.decode('UTF-8')
+    # try:
+    # oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='', redirect_uri = 'http://localhost:8080/mygear')
+    # credentials = oauth_flow.step2_exchange(code)
+    # except FlowExchangeError:
+    #     response = make_response(json.dumps('failed to get auth code'), 401)
+    #     response.headers['Content-Type'] = 'application.json'
+    #     return response
+
+    url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % code
+    h = httplib2.Http()
+    result = json.loads(h.request(url)[1].decode('UTF-8'))
+    print("------------------request-------------------", h.request(url))
+    print("--------------------------------------------", result)
+    print("----------------resultError-----------------", result.get('error'))
+
+    if result.get('error') is not None:
+        response = make_response(json.dumps(result.get('error')), 500)
+        response.headers['Content-Type'] = 'application.json'
+        return response
+    output = "<h1>%s</h1>" % code
     response = make_response(json.dumps({'success':True}), 200)
     response.headers['Content-Type'] = 'application.json'
-    return output
+    return response
 
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):

@@ -15,3 +15,11 @@ After that it will be on to some more logic for my app, incorporating the user s
 Then logout
 Then make it pretty
 
+
+
+
+Got the session state verification working. Now I successfully ahve gotten the access code from within the response from Google. AND I have successfully sent that code to my webserver. Now I just need to figure out how to use it/ send it to google to verify that is the same one that they sent the user/browser/the login webpage
+
+holy crap....
+spent about 4 hours trying to verify this damn token. The issue was the damn proxy.
+But, even now I'm getting a malformed error. This is horrible.

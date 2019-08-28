@@ -9,6 +9,7 @@
 <html lang="en">
   <head>
     <meta name="google-signin-scope" content="profile email">
+    <!-- <meta name="google-signin-response_type" content="code"> -->
     <meta name="google-signin-client_id" content="509977219666-6kqe23mopai4ed58vn5nliancmundcmj.apps.googleusercontent.com">
     <script src="https://apis.google.com/js/platform.js" async defer></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
@@ -20,6 +21,9 @@
       function onSignIn(authResult) {
         // Useful data for your client-side scripts:
         console.log(authResult)
+        // console.log('did it work', authResult['code'])
+        console.log("code", authResult['Zi']['access_token'])
+        console.log("token_id", authResult['Zi']['id_token'])
         // var profile = googleUser.getBasicProfile();
         // console.log("ID: " + profile.getId()); // Don't send this directly to your server!
         // console.log('Full Name: ' + profile.getName());
@@ -36,14 +40,14 @@
           type:'POST',
           url: '/gconnect?state={{STATE}}',
           processData: false,
-          // data: authResult['code'],
+          data: authResult['Zi']['access_token'], //[authResult['Zi']['access_token'], authResult['Zi']['id_token']],
           contentType: 'application/octet-stream; charset=utf-8',
           success: function(result) {
             console.log(result)
             $('#result').html('hello')
-            setTimeout(function(){
-              window.location.href = '/mygear'
-            },3000)
+            // setTimeout(function(){
+            //   window.location.href = '/mygear'
+            // },3000)
           },
           error: function(error) {
             console.log("failed", error)
