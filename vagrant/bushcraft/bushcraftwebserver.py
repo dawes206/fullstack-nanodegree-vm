@@ -101,7 +101,7 @@ def googleLogin():
     credentials = client.credentials_from_clientsecrets_and_code('client_secrets.json',
     ['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
     request.data)
-    print("------------------access_token-------------------", credentials.access_token)
+    print("------------------id_token-------------------", credentials.id_token)
     # http_auth = credentials.authorize(httplib2.Http())
     # drive_service = discovery.build('drive', 'v3', http=http_auth)
     # appfolder = drive_service.files().get(fileId='appfolder').execute()
@@ -117,19 +117,48 @@ def googleLogin():
 
     url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % credentials.access_token
     h = httplib2.Http()
-    result = json.loads(h.request(url)[1].decode('UTF-8'))
-    print("------------------request-------------------", h.request(url))
-    print("--------------------------------------------", result)
-    print("----------------resultError-----------------", result.get('error'))
+    resultAPICert = json.loads(h.request(url)[1].decode('UTF-8'))
 
-    if result.get('error') is not None:
-        response = make_response(json.dumps(result.get('error')), 500)
+    if resultAPICert.get('error') is not None:
+        response = make_response(json.dumps(resultAPICert.get('error')), 500)
         response.headers['Content-Type'] = 'application.json'
         return response
-    output = "<h1>%s</h1>" % credentials.access_token
+
+    if resultAPICert['user_id'] != credentials.id_token['sub']:
+        response = make_response(json.dumps('Token user does not match certified api'), 500)
+        response.headers['Content-Type'] = 'application.json'
+        return response
+
+    if resultAPICert['issued_to'] != CLIENT_ID:
+        print("----------HOT DOG----------------------")
+        response = make_response(json.dumps('Certified client_ID does not match app client_ID'), 500)
+        response.headers['Content-Type'] = 'application.json'
+        return response
+
+
+    #Check if user already loged in
+    if login_session.get('access_token') == 3 and login_session.get('gplus_id') == credentials.id_token['sub']: #<--------changed to prevent error whyile ts. change is not None to is 3
+        print ("----------------login_+session access--------------", login_session.get('access_token'))
+        response = make_response(json.dumps('current user already connected'), 200)
+        response.headers['Content-Type'] = 'application.json'
+        return response
+
+    print("------------------request-------------------", h.request(url))
+    print("--------------------------------------------", resultAPICert['user_id'])
+    print("----------------resultAPICertError-----------------", resultAPICert.get('error'))
+
+    #add session info to session
+    login_session['access_token'] = credentials.access_token
+    login_session['gplus_id'] = credentials.id_token['sub']
+
+    userInfoResponse = requests.get('https://www.googleapis.com/oauth2/v1/userinfo',
+        {'access_token': login_session['access_token'], 'alt': 'json'}).json()
+
+    print("----------------user_info-----------", userInfoResponse)
+    print("----------------user name-----------", userInfoResponse['given_name'])
     response = make_response(json.dumps({'success':True}), 200)
     response.headers['Content-Type'] = 'application.json'
-    return response
+    return userInfoResponse['given_name']
 
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):
