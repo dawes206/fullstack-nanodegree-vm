@@ -23,3 +23,16 @@ Got the session state verification working. Now I successfully ahve gotten the a
 holy crap....
 spent about 4 hours trying to verify this damn token. The issue was the damn proxy.
 But, even now I'm getting a malformed error. This is horrible.
+
+
+Finally figured it out. I was tyring to get an access token, but I was using an access token oto get it, not an auth token. The issue was my google sign in already gets the needed access token. It doesn't get an auth token like lorenzo.
+After that it was just a matter of sending the token along in a url to a google api to see if it gave anything other than an error. And, it doesn't give an error using the token. If I change the token, then it does give an error. Finally moving on!!
+
+K. quick update.
+While tryin gto figure out how to get the user's profile info sent over to my server with the access token, I realieze I was doing user-side authentication, and not server-side. I think the project is meant to be server side, so I decided to redo it. Found ana amazing tutorial online, and it's working, slowly but surely.
+First I had to remake the google sign on button, since the default one I was using returned an access token as well as an auth token.
+Now it just returns an auth token, just like in Lorenzo's video.
+Next I had to create a credentials object to exchange the auth token with an access token.
+having done that, it looks like credentials.access_token works, so I think that I may not need the step2_echange thing.
+Yeah, I think this is right, because I used the credentials)from)clientsecrets_and_code mehtod of oauth, instead of the oauth flow. 
+Boom! Now the test is failing if I modify access tokena nd passing otherwise!

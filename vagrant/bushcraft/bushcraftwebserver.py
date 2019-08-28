@@ -27,6 +27,7 @@ import random, string
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
+from oauth2client import client
 import httplib2
 import json
 from flask import make_response
@@ -96,7 +97,16 @@ def googleLogin():
         response = make_response(json.dumps('invalid state parameter'), 401)
         response.headers['Content-Type'] = 'application.json'
         return response
-    code = request.data.decode('UTF-8')
+
+    credentials = client.credentials_from_clientsecrets_and_code('client_secrets.json',
+    ['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
+    request.data)
+    print("------------------access_token-------------------", credentials.access_token)
+    # http_auth = credentials.authorize(httplib2.Http())
+    # drive_service = discovery.build('drive', 'v3', http=http_auth)
+    # appfolder = drive_service.files().get(fileId='appfolder').execute()
+
+    print("------------------data-------------------", request.data.decode('UTF-8'))
     # try:
     # oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='', redirect_uri = 'http://localhost:8080/mygear')
     # credentials = oauth_flow.step2_exchange(code)
@@ -105,7 +115,7 @@ def googleLogin():
     #     response.headers['Content-Type'] = 'application.json'
     #     return response
 
-    url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % code
+    url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % credentials.access_token
     h = httplib2.Http()
     result = json.loads(h.request(url)[1].decode('UTF-8'))
     print("------------------request-------------------", h.request(url))
@@ -116,7 +126,7 @@ def googleLogin():
         response = make_response(json.dumps(result.get('error')), 500)
         response.headers['Content-Type'] = 'application.json'
         return response
-    output = "<h1>%s</h1>" % code
+    output = "<h1>%s</h1>" % credentials.access_token
     response = make_response(json.dumps({'success':True}), 200)
     response.headers['Content-Type'] = 'application.json'
     return response
