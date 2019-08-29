@@ -16,6 +16,9 @@
       </tr> -->
       {%for j in data.catDict[i]%}
       <tr>
+        <td>
+          <a href="{{url_for('editItem', itemID=j.id)}}">edit</a>
+        </td>
         <td>{{j.name}}</td>
         <td>{{j.weight}} oz</td>
         <td>{{j.volume}} L</td>
