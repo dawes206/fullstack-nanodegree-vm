@@ -99,8 +99,21 @@ def showPack():
 def editGear():
     return render_template('mypackedit.html')
 
-@app.route('/<int:itemID>/edit')
+@app.route('/<int:itemID>/edit', methods=['GET', 'POST'])
 def editItem(itemID):
+    if request.method == 'POST':
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        item = session.query(Items).filter_by(id=itemID).first()
+        item.name = request.form['newName']
+        item.description = request.form['newDescription']
+        item.Amount = request.form['newAmount']
+        item.weight = request.form['newWeight']
+        item.volume = request.form['newVolume']
+        item.category = request.form['newCategory']
+        session.add(item)
+        session.commit()
+        return redirect(url_for('showGear'))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()

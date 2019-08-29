@@ -1,25 +1,26 @@
 <html>
   <body>
     <h1>Item Name</h1>
-    <form action="">
+    <form action="{{url_for('editItem', itemID=item[0].id)}}", method='POST'>
       <p>
         Name:
-      </p><input type="text" value={{item[0].name}}>
+      </p><input type="text" name="newName" value={{item[0].name}}>
       <p>
         Description:
-      </p><input type="text" value="Description"/>
+      </p><input type="text" name="newDescription" value="{{item[0].description}}"/>
       <p>
         Amount:
-      </p><input type="text" value="Amount"/>
+      </p><input type="text" name="newAmount" value="{{item[0].amount}}"/>
       <p>
         Weight:
-      </p><input type="text" value="Weight"/>
+      </p><input type="text" name="newWeight" value="{{item[0].weight}}"/>
       <p>
         Volume:
-      </p><input type="text" value="Volume"/> <input type = "checkbox" />Inside another
+      </p><input type="text" name="newVolume" value="{{item[0].volume}}"/> <input type = "checkbox" />Inside another
       <p>
         Subcategory:
-      </p><input type="text" value="Subcategory"/>
+      </p><input type="text" name="newCategory" value="{{item[0].category}}"/>
+      </p><input type = 'submit', value="SAVE"/>
     </form>
     <button>DELETE</button>
     </body>
