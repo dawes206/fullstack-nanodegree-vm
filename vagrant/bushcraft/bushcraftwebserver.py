@@ -90,6 +90,7 @@ def showGear():
     'catDict' : catDict
     }
     return render_template('mygear.html', data = data)
+
 @app.route('/mypack')
 def showPack():
     return render_template('mypack.html')
@@ -104,6 +105,10 @@ def editItem(itemID):
     session = DBSession()
     item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()
     return render_template('itemedit.html', item = item)
+
+@app.route('/additem')
+def addItem():
+    return render_template('additem.html')
 
 @app.route('/gconnect', methods=['POST'])
 def googleLogin():
