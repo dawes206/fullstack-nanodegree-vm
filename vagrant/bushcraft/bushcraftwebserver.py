@@ -4,7 +4,7 @@
 
 #Next thing I need to do is figure out how to sign out of google, that way I can test, step by step, what lorenzo is doing. What I want to test next is that the ajax call is working properly, by making a console.log, or similar, in the gconnect section of this file.
 
-# from sqlalchemy import create_engine
+# from sqlalchemy import create_engine, text, func
 # from sqlalchemy.orm import sessionmaker
 # from database_setup import Base, User, Items
 # engine = create_engine("sqlite:///bushcrafting.db")
@@ -18,7 +18,7 @@ app = Flask(__name__)
 app.secret_key = 'super_secret_key'
 
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Items
 
@@ -74,7 +74,14 @@ def showGear():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     items = session.query(Items).filter_by(user_id=manualID).all()
-    return render_template('mygear.html', items = items)
+    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight).first().totalWeight
+    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume!=None).first().totalVol
+    data = {
+    'items': items,
+    'totalWeight' : totalWeight,
+    'totalVolume' : totalVolume
+    }
+    return render_template('mygear.html', data = data)
 @app.route('/mypack')
 def showPack():
     return render_template('mypack.html')
@@ -92,6 +99,11 @@ def editItem(itemID):
 
 @app.route('/gconnect', methods=['POST'])
 def googleLogin():
+    #Adding to avoid proxy#
+    response = make_response(json.dumps({'success':True}), 200)
+    response.headers['Content-Type'] = 'application.json'
+    return response
+    ########
     if request.args.get('state') != login_session['state']: #check and see if the session state originally assigned to the user is the same as what we're getting from this login request
         output = "<h1>didn't works</h1>"
         response = make_response(json.dumps('invalid state parameter'), 401)

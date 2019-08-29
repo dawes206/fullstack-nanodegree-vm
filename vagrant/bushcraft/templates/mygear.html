@@ -1,13 +1,29 @@
 <html>
   <body>
     <h1>My Gear</h1>
-    <span>___lbs</span>
-    <span>___L</span>
-    <ul style="list-style-type:none">
+    <div>{{data['totalWeight']}} oz</div>
+    <div>{{data['totalVolume']}} L</div>
+    <br/>
+    <table>
+      <!-- <tr>
+        <td>
+          {{data.items}}
+        </td>
+      </tr> -->
+      {%for i in data['items']%}
+      <tr>
+        <td>{{i.name}}</td>
+        <td>{{i.weight}} oz</td>
+        <td>{{i.volume}} L</td>
+      </tr>
+      {%endfor%}
+    </table>
+    <!-- <ul style="list-style-type:none">
     {%for i in items%}
     <li><input type="checkbox">{{i.name}}...lbs...L</li>
-    {%endfor%}
+    {%endfor%} -->
     </ul>
+    <br/>
     <button>+ subcategory</button>
     <button>+ item</button>
     </body>
