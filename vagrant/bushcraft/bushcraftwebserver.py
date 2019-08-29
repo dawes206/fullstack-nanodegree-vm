@@ -74,12 +74,20 @@ def showGear():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     items = session.query(Items).filter_by(user_id=manualID).all()
+    catDict = {}
+    categories = session.query(Items.category).group_by(Items.category).all()
+    for i in categories:
+        catDict[i.category] = session.query(Items).filter_by(
+        user_id=manualID,
+        category=i.category
+        ).all()
     totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight).first().totalWeight
     totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume!=None).first().totalVol
     data = {
     'items': items,
     'totalWeight' : totalWeight,
-    'totalVolume' : totalVolume
+    'totalVolume' : totalVolume,
+    'catDict' : catDict
     }
     return render_template('mygear.html', data = data)
 @app.route('/mypack')
