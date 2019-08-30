@@ -151,8 +151,22 @@ def editItem(itemID):
     item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()
     return render_template('itemedit.html', item = item)
 
-@app.route('/additem')
+@app.route('/additem', methods=['GET','POST'])
 def addItem():
+    if request.method == 'POST':
+        DBSession = sessionmaker(bind=engine)
+        session = DBSession()
+        newItem = Items()
+        newItem.name = request.form["name"]
+        newItem.description = request.form["description"]
+        newItem.amount = request.form["amount"]
+        newItem.weight = request.form["weight"]
+        newItem.volume = request.form["volume"]
+        newItem.category = request.form["category"]
+        newItem.user_id = manualID
+        session.add(newItem)
+        session.commit()
+        return redirect(url_for("showGear"))
     return render_template('additem.html')
 
 @app.route('/gconnect', methods=['POST'])

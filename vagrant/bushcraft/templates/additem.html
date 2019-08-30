@@ -1,26 +1,35 @@
 <html>
   <body>
     <h1>New Item</h1>
-    <form action="">
+    <form action="{{url_for('addItem')}}" method="POST">
       <p>
         Name:
-      </p><input type="text" value='name'>
+      </p>
+        <input name="name" type="text" placeholder='name' required/>
       <p>
         Description:
-      </p><input type="text" value="Description"/>
+      </p>
+        <input name="description" type="text" placeholder="Description"/>
       <p>
         Amount:
-      </p><input type="text" value="Amount"/>
+      </p>
+        <input name="amount" type="text" placeholder="Amount"/>
       <p>
         Weight:
-      </p><input type="text" value="Weight"/>
+      </p>
+        <input name="weight" type="text" placeholder="Weight" required/>
       <p>
         Volume:
-      </p><input type="text" value="Volume"/> <input type = "checkbox" />Inside another
+      </p>
+        <input name="volume" type="text" placeholder="Volume" required/> <input type = "checkbox" />Inside another
       <p>
         Subcategory:
-      </p><input type="text" value="Subcategory"/>
+      </p>
+        <input name="category" type="text" placeholder="Category"/>
+      <p>
+        <input type="submit" value="Add"/>
+      </p>
     </form>
-    <button>DELETE</button>
+    <a href="{{url_for('showGear')}}">Cancel</a>
     </body>
 </html>
