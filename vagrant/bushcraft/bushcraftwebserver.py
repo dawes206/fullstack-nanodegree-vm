@@ -51,7 +51,7 @@ user1 = {'name': 'Silas', 'id': '1'}
 # items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
 item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8'}
 
-manualID = 1
+# manualID = login_session.get('manualID')
 
 # items = []
 
@@ -76,8 +76,8 @@ def showGear():
     # items = session.query(Items).filter_by(user_id=manualID).all()
     if request.method=='POST':
         entries = request.form #<--returns immutable mutli-dict, which will still accept the "in" conditional statement
-        packedItems = session.query(Items).filter(Items.id.in_(entries), Items.user_id==manualID).all()
-        unpackedItems = session.query(Items).filter(Items.id.notin_(entries), Items.user_id==manualID).all()
+        packedItems = session.query(Items).filter(Items.id.in_(entries), Items.user_id==login_session.get('manualID')).all()
+        unpackedItems = session.query(Items).filter(Items.id.notin_(entries), Items.user_id==login_session.get('manualID')).all()
         for i in packedItems:
             i.packed = True
             session.add(i)
@@ -88,14 +88,15 @@ def showGear():
         return redirect(url_for('showPack'))
 
     catDict = {}
-    categories = session.query(Items.category).filter(Items.user_id==manualID).group_by(Items.category).all()
+    categories = session.query(Items.category).filter(Items.user_id==login_session.get('manualID')).group_by(Items.category).all()
     for i in categories:
         catDict[i.category] = session.query(Items).filter_by(
-        user_id=manualID,
+        user_id=login_session.get('manualID'),
         category=i.category
         ).all()
-    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==manualID).first().totalWeight
-    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==manualID).first().totalVol
+
+    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==login_session.get('manualID')).first().totalWeight
+    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==login_session.get('manualID')).first().totalVol
     data = {
         # 'items': items,
         'totalWeight' : totalWeight,
@@ -109,15 +110,15 @@ def showPack():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     catDict = {}
-    categories = session.query(Items.category).filter(Items.user_id==manualID, Items.packed==True).group_by(Items.category).all()
+    categories = session.query(Items.category).filter(Items.user_id==login_session.get('manualID'), Items.packed==True).group_by(Items.category).all()
     for i in categories:
         catDict[i.category] = session.query(Items).filter_by(
-        user_id=manualID,
+        user_id=login_session.get('manualID'),
         category=i.category,
         packed=True
         ).all()
-    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==manualID, Items.packed==True).first().totalWeight
-    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==manualID, Items.packed==True).first().totalVol
+    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==login_session.get('manualID'), Items.packed==True).first().totalWeight
+    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==login_session.get('manualID'), Items.packed==True).first().totalVol
     print('-----------------------', categories)
     data = {
         # 'items': items,
@@ -148,7 +149,7 @@ def editItem(itemID):
         return redirect(url_for('showGear'))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()
+    item = session.query(Items).filter_by(user_id=login_session.get('manualID'), id=itemID).all()
     return render_template('itemedit.html', item = item)
 
 @app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
@@ -174,7 +175,7 @@ def addItem():
         newItem.weight = request.form["weight"]
         newItem.volume = request.form["volume"]
         newItem.category = request.form["category"]
-        newItem.user_id = manualID
+        newItem.user_id = login_session.get('manualID')
         session.add(newItem)
         session.commit()
         return redirect(url_for("showGear"))
@@ -182,11 +183,11 @@ def addItem():
 
 @app.route('/gconnect', methods=['POST'])
 def googleLogin():
-    #Adding to avoid proxy#
-    response = make_response(json.dumps({'success':True}), 200)
-    response.headers['Content-Type'] = 'application.json'
-    return response
-    ########
+    # #Adding to avoid proxy#
+    # response = make_response(json.dumps({'success':True}), 200)
+    # response.headers['Content-Type'] = 'application.json'
+    # return response
+    # ########
     if request.args.get('state') != login_session['state']: #check and see if the session state originally assigned to the user is the same as what we're getting from this login request
         output = "<h1>didn't works</h1>"
         response = make_response(json.dumps('invalid state parameter'), 401)
@@ -251,6 +252,27 @@ def googleLogin():
 
     print("----------------user_info-----------", userInfoResponse)
     print("----------------user name-----------", userInfoResponse['given_name'])
+
+    #add user to databse
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    #check if new user
+    user = session.query(User).filter(User.email==userInfoResponse['email']).first()
+    if user:
+        response = make_response(json.dumps({'success':True}), 200)
+        response.headers['Content-Type'] = 'application.json'
+        login_session['manualID'] = user.id
+        print("----------------not new-----------")
+        print('----------------lgin session----------', login_session.get('manualID'))
+        return userInfoResponse['given_name']
+
+    newUser = User()
+    newUser.name = userInfoResponse['given_name']
+    newUser.email = userInfoResponse['email']
+    session.add(newUser)
+    session.commit()
+    login_session['manualID'] = newUser.id
+    print('----------------lgin session----------', login_session.get('manualID'))
     response = make_response(json.dumps({'success':True}), 200)
     response.headers['Content-Type'] = 'application.json'
     return userInfoResponse['given_name']
