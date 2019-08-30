@@ -140,10 +140,11 @@ def editGear():
 def editItem(itemID):
     if 'manualID' not in login_session:
         return redirect(url_for("home"))
+
     if request.method == 'POST':
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
-        item = session.query(Items).filter_by(id=itemID).first()
+        item = session.query(Items).filter_by(id=itemID,user_id = login_session['manualID']).first()
         item.name = request.form['newName']
         item.description = request.form['newDescription']
         item.amount = request.form['newAmount']
@@ -156,6 +157,8 @@ def editItem(itemID):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter_by(user_id=login_session.get('manualID'), id=itemID).all()
+    if not item:
+        return "trying to access someone elses stuff"
     return render_template('itemedit.html', item = item)
 
 @app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
@@ -164,7 +167,9 @@ def deleteItem(itemID):
         return redirect(url_for("home"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    item = session.query(Items).filter(Items.id==itemID).first()
+    item = session.query(Items).filter(Items.id==itemID, Items.user_id==login_session.get('manualID')).first()
+    if not item:
+        return "trying to access someone elses stuff"
     if request.method=='POST':
         session.delete(item)
         session.commit()
@@ -295,6 +300,7 @@ def gdisconnect():
     h = httplib2.Http()
     disconnectResponse = json.loads(h.request(url)[1].decode('UTF-8'))
     if disconnectResponse.get('error'):
+        print('-----------------reason-------------', disconnectResponse)
         print('------------------login_session token-----------', login_session['access_token'])
         return "failed to log off"
     del login_session['access_token']
