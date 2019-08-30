@@ -275,6 +275,23 @@ def googleLogin():
     response.headers['Content-Type'] = 'application.json'
     return userInfoResponse['given_name']
 
+@app.route('/gdisconnect')
+def gdisconnect():
+    credentials = login_session.get('credentials')
+    url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token'] #<------added 1 at end of url because I don't want to revoke token during ts
+    h = httplib2.Http()
+    disconnectResponse = json.loads(h.request(url)[1].decode('UTF-8'))
+    if disconnectResponse.get('error'):
+        print('------------------login_session token-----------', login_session['access_token'])
+        return "failed to log off"
+    del login_session['access_token']
+    del login_session['manualID']
+    del login_session['gplus_id']
+    del login_session['state']
+    if 'access_token' not in login_session:
+        print('------------------access_token gone-----------')
+    return "successfully logged off"
+
 # @app.route('/<int:restaurantID>/menu')
 # def showMenu(restaurantID):
 #     DBSession = sessionmaker(bind=engine)

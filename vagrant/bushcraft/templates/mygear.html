@@ -1,6 +1,7 @@
 <html>
   <body>
     <h1>My Gear</h1>
+    <a href="{{url_for('gdisconnect')}}">Log Out</a>
     {%if data.catDict%}
     <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
     <div>{{data['totalVolume']}} L</div>
