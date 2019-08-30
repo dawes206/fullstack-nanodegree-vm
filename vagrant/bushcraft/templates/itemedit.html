@@ -4,19 +4,27 @@
     <form action="{{url_for('editItem', itemID=item[0].id)}}", method='POST'>
       <p>
         Name:
-      </p><input type="text" name="newName" value={{item[0].name}}>
+      </p>
+      <input type="text" name="newName" value={{item[0].name}}>
       <p>
         Description:
-      </p><input type="text" name="newDescription" value="{{item[0].description}}"/>
+      </p>
+      <input type="text" name="newDescription" value="{{item[0].description}}"/>
       <p>
         Amount:
-      </p><input type="text" name="newAmount" value="{{item[0].amount}}"/>
+      </p>
+      <input type="text" name="newAmount" value="{{item[0].amount}}"/>
       <p>
         Weight:
-      </p><input type="text" name="newWeight" value="{{item[0].weight}}"/>
+      </p>
+      <input type="text" name="newWeight" value="{{item[0].weight}}"
+      pattern="[0-9]+.*[0-9]*"/>
       <p>
         Volume:
-      </p><input type="text" name="newVolume" value="{{item[0].volume}}"/> <input type = "checkbox" />Inside another
+      </p>
+      <input type="text" name="newVolume" value="{{item[0].volume}}"
+      pattern="[0-9]+.*[0-9]*"/>
+      <input type = "checkbox" />Inside another
       <p>
         Subcategory:
       </p><input type="text" name="newCategory" value="{{item[0].category}}"/>

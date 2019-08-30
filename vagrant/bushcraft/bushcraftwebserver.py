@@ -107,7 +107,7 @@ def editItem(itemID):
         item = session.query(Items).filter_by(id=itemID).first()
         item.name = request.form['newName']
         item.description = request.form['newDescription']
-        item.Amount = request.form['newAmount']
+        item.amount = request.form['newAmount']
         item.weight = request.form['newWeight']
         item.volume = request.form['newVolume']
         item.category = request.form['newCategory']
