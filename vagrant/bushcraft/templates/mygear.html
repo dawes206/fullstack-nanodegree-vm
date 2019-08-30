@@ -1,7 +1,7 @@
 <html>
   <body>
     <h1>My Gear</h1>
-    <div>{{data['totalWeight']}} oz</div>
+    <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
     <div>{{data['totalVolume']}} L</div>
     <br/>
     <form action="{{url_for('showGear')}}" method="POST">

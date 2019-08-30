@@ -5,7 +5,7 @@
       <p>
         Name:
       </p>
-      <input type="text" name="newName" value={{item[0].name}}>
+      <input type="text" name="newName" value="{{item[0].name}}">
       <p>
         Description:
       </p>
@@ -29,6 +29,7 @@
         Subcategory:
       </p><input type="text" name="newCategory" value="{{item[0].category}}"/>
     </p><input type = 'submit', value="Save Item"/>
+    <a href="{{url_for('showGear')}}">Back To Gear</a>
     </form>
     <a href="{{url_for('deleteItem', itemID=item[0].id)}}">Delete Item</button>
     </body>
