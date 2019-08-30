@@ -69,6 +69,8 @@ def home():
 
 @app.route('/mygear', methods=['GET', 'POST'])
 def showGear():
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     # items = session.query(Items).filter_by(user_id=manualID).all()
@@ -105,6 +107,8 @@ def showGear():
 
 @app.route('/mypack')
 def showPack():
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     catDict = {}
@@ -128,10 +132,14 @@ def showPack():
 
 @app.route('/mygear/edit')
 def editGear():
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     return render_template('mypackedit.html')
 
 @app.route('/<int:itemID>/edit', methods=['GET', 'POST'])
 def editItem(itemID):
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     if request.method == 'POST':
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
@@ -152,6 +160,8 @@ def editItem(itemID):
 
 @app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
 def deleteItem(itemID):
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter(Items.id==itemID).first()
@@ -163,6 +173,8 @@ def deleteItem(itemID):
 
 @app.route('/additem', methods=['GET','POST'])
 def addItem():
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     if request.method == 'POST':
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
@@ -275,9 +287,10 @@ def googleLogin():
     response.headers['Content-Type'] = 'application.json'
     return userInfoResponse['given_name']
 
-@app.route('/gdisconnect')
+@app.route('/gdisconnect', methods = ["GET"])
 def gdisconnect():
-    credentials = login_session.get('credentials')
+    if 'manualID' not in login_session:
+        return redirect(url_for("home"))
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token'] #<------added 1 at end of url because I don't want to revoke token during ts
     h = httplib2.Http()
     disconnectResponse = json.loads(h.request(url)[1].decode('UTF-8'))
