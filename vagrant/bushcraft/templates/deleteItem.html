@@ -1,0 +1,12 @@
+<html>
+  <body>
+    <h1>Item Name</h1>
+    <form action="{{url_for('deleteItem', itemID=item.id)}}", method='POST'>
+      <p>
+        Are you sure you want to delete {{item.name}}?
+        </p>
+      <input type="submit" value=Delete />
+    </form>
+    <a href="{{url_for('editItem', itemID=item.id)}}">Cancel</a>
+    </body>
+</html>

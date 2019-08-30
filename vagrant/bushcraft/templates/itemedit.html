@@ -28,8 +28,8 @@
       <p>
         Subcategory:
       </p><input type="text" name="newCategory" value="{{item[0].category}}"/>
-      </p><input type = 'submit', value="SAVE"/>
+    </p><input type = 'submit', value="Save Item"/>
     </form>
-    <button>DELETE</button>
+    <a href="{{url_for('deleteItem', itemID=item[0].id)}}">Delete Item</button>
     </body>
 </html>

@@ -151,6 +151,17 @@ def editItem(itemID):
     item = session.query(Items).filter_by(user_id=manualID, id=itemID).all()
     return render_template('itemedit.html', item = item)
 
+@app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
+def deleteItem(itemID):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    item = session.query(Items).filter(Items.id==itemID).first()
+    if request.method=='POST':
+        session.delete(item)
+        session.commit()
+        return redirect(url_for("showGear"))
+    return render_template('deleteItem.html', item=item)
+
 @app.route('/additem', methods=['GET','POST'])
 def addItem():
     if request.method == 'POST':
