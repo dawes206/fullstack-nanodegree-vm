@@ -75,7 +75,7 @@ def showGear():
     session = DBSession()
     # items = session.query(Items).filter_by(user_id=manualID).all()
     catDict = {}
-    categories = session.query(Items.category).filter_by(user_id=manualID).group_by(Items.category).all()
+    categories = session.query(Items.category).filter(Items.user_id==manualID).group_by(Items.category).all()
     for i in categories:
         catDict[i.category] = session.query(Items).filter_by(
         user_id=manualID,
@@ -84,16 +84,35 @@ def showGear():
     totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==manualID).first().totalWeight
     totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==manualID).first().totalVol
     data = {
-    # 'items': items,
-    'totalWeight' : totalWeight,
-    'totalVolume' : totalVolume,
-    'catDict' : catDict
+        # 'items': items,
+        'totalWeight' : totalWeight,
+        'totalVolume' : totalVolume,
+        'catDict' : catDict
     }
     return render_template('mygear.html', data = data)
 
 @app.route('/mypack')
 def showPack():
-    return render_template('mypack.html')
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    catDict = {}
+    categories = session.query(Items.category).filter(Items.user_id==manualID, Items.packed==True).group_by(Items.category).all()
+    for i in categories:
+        catDict[i.category] = session.query(Items).filter_by(
+        user_id=manualID,
+        category=i.category,
+        packed=True
+        ).all()
+    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==manualID, Items.packed==True).first().totalWeight
+    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==manualID, Items.packed==True).first().totalVol
+    print('-----------------------', categories)
+    data = {
+        # 'items': items,
+        'totalWeight' : totalWeight,
+        'totalVolume' : totalVolume,
+        'catDict' : catDict
+    }
+    return render_template('mypack.html', data=data)
 
 @app.route('/mygear/edit')
 def editGear():

@@ -4,10 +4,22 @@
       <h1>My Pack</h1>
       <a>Edit</a>
     </span>
-    <p>
-      ___lb  ___L
-    </p>
-    <ul style="list-style-type:none">
+    <div>{{data.totalWeight}} oz</div>
+    <div>{{data.totalVolume}} L</div>
+    {%for i in data.catDict.keys()%}
+    <h2>{{i}}</h2>
+    <table>
+      <tr>
+        {%for j in data.catDict[i]%}
+        <td>{{j.name}}</td>
+        <td>{{j.weight}} oz</td>
+        <td>{{j.volume}} L</td>
+        {%endfor%}
+      </tr>
+    </table>
+    {%endfor%}
+
+      <!-- <ul style="list-style-type:none">
       <li>
         <a>knife</a>
         <a>__lb</a>
@@ -20,6 +32,6 @@
         <a>__L</a>
         <a>remove</a>
       </li>
-    </ul>
+    </ul> -->
     </body>
 </html>
