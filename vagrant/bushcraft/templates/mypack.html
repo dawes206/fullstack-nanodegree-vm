@@ -3,6 +3,7 @@
     <span>
       <h1>My Pack</h1>
     </span>
+    {%if data.catDict%}
     <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
     <div>{{data.totalVolume}} L</div>
     {%for i in data.catDict.keys()%}
@@ -32,6 +33,11 @@
         <a>remove</a>
       </li>
     </ul> -->
+    {%else%}
+    <p>
+      No items currently in your pack
+    </p>
+    {%endif%}
     <a href="{{url_for('showGear')}}">Back To Gear</a>
     </body>
 </html>

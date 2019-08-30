@@ -1,6 +1,7 @@
 <html>
   <body>
     <h1>My Gear</h1>
+    {%if data.catDict%}
     <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
     <div>{{data['totalVolume']}} L</div>
     <br/>
@@ -33,6 +34,9 @@
     <br/>
     <input type="submit" value="View Pack" />
   </form>
+  {%else%}
+  <a href="{{url_for('addItem')}}" type=button>+ item</a>
+  {%endif%}
     <!-- <ul style="list-style-type:none">
     {%for i in items%}
     <li><input type="checkbox">{{i.name}}...lbs...L</li>
