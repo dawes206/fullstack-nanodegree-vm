@@ -69,11 +69,24 @@ def home():
     # else:
     #     return render_template('home.html', restaurants = restaurants)
 
-@app.route('/mygear')
+@app.route('/mygear', methods=['GET', 'POST'])
 def showGear():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     # items = session.query(Items).filter_by(user_id=manualID).all()
+    if request.method=='POST':
+        entries = request.form #<--returns immutable mutli-dict, which will still accept the "in" conditional statement
+        packedItems = session.query(Items).filter(Items.id.in_(entries), Items.user_id==manualID).all()
+        unpackedItems = session.query(Items).filter(Items.id.notin_(entries), Items.user_id==manualID).all()
+        for i in packedItems:
+            i.packed = True
+            session.add(i)
+        for i in unpackedItems:
+            i.packed = False
+            session.add(i)
+        session.commit()
+        return redirect(url_for('showPack'))
+
     catDict = {}
     categories = session.query(Items.category).filter(Items.user_id==manualID).group_by(Items.category).all()
     for i in categories:

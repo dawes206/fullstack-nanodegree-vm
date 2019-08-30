@@ -9,8 +9,8 @@
     {%for i in data.catDict.keys()%}
     <h2>{{i}}</h2>
     <table>
+      {%for j in data.catDict[i]%}
       <tr>
-        {%for j in data.catDict[i]%}
         <td>{{j.name}}</td>
         <td>{{j.weight}} oz</td>
         <td>{{j.volume}} L</td>
