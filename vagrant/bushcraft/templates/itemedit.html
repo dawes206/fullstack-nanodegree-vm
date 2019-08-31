@@ -1,6 +1,6 @@
 <html>
   <body>
-    <h1>Item Name</h1>
+    <h1>{{item[0].name}}</h1>
     <form action="{{url_for('editItem', itemID=item[0].id)}}", method='POST'>
       <p>
         Name:
@@ -29,8 +29,8 @@
         Subcategory:
       </p><input type="text" name="newCategory" value="{{item[0].category}}"/>
     </p><input type = 'submit', value="Save Item"/>
-    <a href="{{url_for('showGear')}}">Back To Gear</a>
+      <a href="{{url_for('deleteItem', itemID=item[0].id)}}"><button type="button">Delete Item</button></a>
     </form>
-    <a href="{{url_for('deleteItem', itemID=item[0].id)}}">Delete Item</button>
+    <a href="{{url_for('showGear')}}"><button type="button">Back To Gear</button></a>
     </body>
 </html>

@@ -36,3 +36,10 @@ Next I had to create a credentials object to exchange the auth token with an acc
 having done that, it looks like credentials.access_token works, so I think that I may not need the step2_echange thing.
 Yeah, I think this is right, because I used the credentials)from)clientsecrets_and_code mehtod of oauth, instead of the oauth flow. 
 Boom! Now the test is failing if I modify access tokena nd passing otherwise!
+
+
+Things to do:
+Everything capital
+include "store within" in database
+center tables
+Radio buttons for categories

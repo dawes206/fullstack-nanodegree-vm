@@ -1,10 +1,27 @@
+<!-- Working on styling so everything looks a little nicer -->
 <html>
+<head>
+  <!-- <link rel = "stylesheet" href = "/static/style.css"/> -->
+</head>
   <body>
-    <h1>My Gear</h1>
-    <a href="{{url_for('gdisconnect')}}">Log Out</a>
+    <div>
+      <h1 style="display:inline-block">My Gear</h1>
+      <a href="{{url_for('gdisconnect')}}">Log Out</a>
+    </div>
     {%if data.catDict%}
-    <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
-    <div>{{data['totalVolume']}} L</div>
+    <table>
+      <tr>
+        <th> Weight </th>
+        <th> Volume </th>
+      </tr>
+      <tr>
+        <td>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</td>
+        <td>{{data['totalVolume']}} L</td>
+      </tr>
+      </th>
+    </table>
+    <!-- <div style="display:inline-block">{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
+    <div style="display:inline-block">{{data['totalVolume']}} L</div> -->
     <br/>
     <form action="{{url_for('showGear')}}" method="POST">
     {%for i in data.catDict.keys()%}
@@ -31,12 +48,12 @@
       {%endfor%}
     </table>
     {%endfor%}
-    <a href="{{url_for('addItem')}}" type=button>+ item</a>
     <br/>
+    <a href="{{url_for('addItem')}}"><button type="button">Add Item</button></a>
     <input type="submit" value="View Pack" />
   </form>
   {%else%}
-  <a href="{{url_for('addItem')}}" type=button>+ item</a>
+  <a href="{{url_for('addItem')}}"><button>Add Item</button></a>
   {%endif%}
     <!-- <ul style="list-style-type:none">
     {%for i in items%}
