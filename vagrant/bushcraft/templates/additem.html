@@ -25,7 +25,10 @@
       <p>
         Subcategory:
       </p>
-        <input name="category" type="text" placeholder="Category"/>
+      {%for cat in categories%}
+      <input type="radio" name="category" value="{{cat}}" />{{cat}}
+      {%endfor%}
+      <input type="radio" value="cat"/>Other: <input type="text" name="category" placeholder="New Category"/>
       <p>
         <input type="submit" value="Add"/>
       </p>

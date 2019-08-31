@@ -140,7 +140,6 @@ def editGear():
 def editItem(itemID):
     if 'manualID' not in login_session:
         return redirect(url_for("home"))
-
     if request.method == 'POST':
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
@@ -157,9 +156,11 @@ def editItem(itemID):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter_by(user_id=login_session.get('manualID'), id=itemID).all()
+    categories = session.query(Items.category).filter_by(user_id=login_session.get('manualID')).group_by(Items.category).all()
+    catList = list(map(lambda x: x[0], categories))
     if not item:
         return "trying to access someone elses stuff"
-    return render_template('itemedit.html', item = item)
+    return render_template('itemedit.html', item = item, categories=catList)
 
 @app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
 def deleteItem(itemID):
@@ -180,9 +181,9 @@ def deleteItem(itemID):
 def addItem():
     if 'manualID' not in login_session:
         return redirect(url_for("home"))
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
     if request.method == 'POST':
-        DBSession = sessionmaker(bind=engine)
-        session = DBSession()
         newItem = Items()
         newItem.name = request.form["name"]
         newItem.description = request.form["description"]
@@ -194,7 +195,9 @@ def addItem():
         session.add(newItem)
         session.commit()
         return redirect(url_for("showGear"))
-    return render_template('additem.html')
+    categories = session.query(Items.category).filter_by(user_id=login_session.get('manualID')).group_by(Items.category).all()
+    catList = list(map(lambda x: x[0], categories))
+    return render_template('additem.html', categories=catList)
 
 @app.route('/gconnect', methods=['POST'])
 def googleLogin():

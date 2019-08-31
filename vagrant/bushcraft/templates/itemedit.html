@@ -27,8 +27,13 @@
       <input type = "checkbox" />Inside another
       <p>
         Subcategory:
-      </p><input type="text" name="newCategory" value="{{item[0].category}}"/>
-    </p><input type = 'submit', value="Save Item"/>
+      </p>
+      {%for cat in categories%}
+      <input type="radio" name="newCategory" value="{{cat}}" />{{cat}}
+      {%endfor%}
+      <input type="radio" value="newCat"/>Other: <input type="text" name="newCategory" placeholder="New Category"/>
+      <br/>
+      <input type = 'submit', value="Save Item"/>
       <a href="{{url_for('deleteItem', itemID=item[0].id)}}"><button type="button">Delete Item</button></a>
     </form>
     <a href="{{url_for('showGear')}}"><button type="button">Back To Gear</button></a>

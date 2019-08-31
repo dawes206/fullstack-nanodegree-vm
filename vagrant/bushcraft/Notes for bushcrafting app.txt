@@ -43,3 +43,4 @@ Everything capital
 include "store within" in database
 center tables
 Radio buttons for categories
+include "no category" instead of nothing
