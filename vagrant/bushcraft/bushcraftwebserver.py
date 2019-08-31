@@ -149,7 +149,10 @@ def editItem(itemID):
         item.amount = request.form['newAmount']
         item.weight = request.form['newWeight']
         item.volume = request.form['newVolume']
-        item.category = request.form['newCategory']
+        if request.form['category'] == 'newCategory':
+            item.category = request.form["newCategoryValue"]
+        else:
+            item.category = request.form['category']
         session.add(item)
         session.commit()
         return redirect(url_for('showGear'))
@@ -190,7 +193,12 @@ def addItem():
         newItem.amount = request.form["amount"]
         newItem.weight = request.form["weight"]
         newItem.volume = request.form["volume"]
-        newItem.category = request.form["category"]
+        if not request.form["category"]:
+            newItem.category = 'None'
+        elif request.form["category"] == 'newCategory':
+            newItem.category = request.form["newCategoryValue"]
+        else:
+            newItem.category = request.form["category"]
         newItem.user_id = login_session.get('manualID')
         session.add(newItem)
         session.commit()

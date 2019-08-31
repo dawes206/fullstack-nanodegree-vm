@@ -29,9 +29,9 @@
         Subcategory:
       </p>
       {%for cat in categories%}
-      <input type="radio" name="newCategory" value="{{cat}}" />{{cat}}
+      <input type="radio" name="category" value="{{cat}}" {%if item[0].category==cat%} checked {%endif%}/>{{cat}}
       {%endfor%}
-      <input type="radio" value="newCat"/>Other: <input type="text" name="newCategory" placeholder="New Category"/>
+      <input type="radio" name="category" value="newCategory"/>Other: <input type="text" name="newCategoryValue" placeholder="New Category"/>
       <br/>
       <input type = 'submit', value="Save Item"/>
       <a href="{{url_for('deleteItem', itemID=item[0].id)}}"><button type="button">Delete Item</button></a>
