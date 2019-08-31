@@ -5,33 +5,33 @@
       <p>
         Name:
       </p>
-      <input type="text" name="newName" value="{{item[0].name}}">
+      <input type="text" name="updateName" value="{{item[0].name}}">
       <p>
         Description:
       </p>
-      <input type="text" name="newDescription" value="{{item[0].description}}"/>
+      <input type="text" name="updateDescription" value="{{item[0].description}}"/>
       <p>
         Amount:
       </p>
-      <input type="text" name="newAmount" value="{{item[0].amount}}"/>
+      <input type="text" name="updateAmount" value="{{item[0].amount}}"/>
       <p>
         Weight:
       </p>
-      <input type="text" name="newWeight" value="{{item[0].weight}}"
+      <input type="text" name="updateWeight" value="{{item[0].weight}}"
       pattern="[0-9]+.*[0-9]*"/>
       <p>
         Volume:
       </p>
-      <input type="text" name="newVolume" value="{{item[0].volume}}"
+      <input type="text" name="updateVolume" value="{{item[0].volume}}"
       pattern="[0-9]+.*[0-9]*"/>
       <input type = "checkbox" />Inside another
       <p>
         Subcategory:
       </p>
       {%for cat in categories%}
-      <input type="radio" name="category" value="{{cat}}" {%if item[0].category==cat%} checked {%endif%}/>{{cat}}
+      <input type="radio" name="updateCategory" value="{{cat}}" {%if item[0].category==cat%} checked {%endif%}/>{{cat}}
       {%endfor%}
-      <input type="radio" name="category" value="newCategory"/>Other: <input type="text" name="newCategoryValue" placeholder="New Category"/>
+      <input type="radio" name="updateCategory" value="newCategory"/>Other: <input type="text" name="newCategoryValue" placeholder="New Category"/>
       <br/>
       <input type = 'submit', value="Save Item"/>
       <a href="{{url_for('deleteItem', itemID=item[0].id)}}"><button type="button">Delete Item</button></a>

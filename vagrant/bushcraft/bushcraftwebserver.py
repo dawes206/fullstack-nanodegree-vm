@@ -144,15 +144,17 @@ def editItem(itemID):
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
         item = session.query(Items).filter_by(id=itemID,user_id = login_session['manualID']).first()
-        item.name = request.form['newName']
-        item.description = request.form['newDescription']
-        item.amount = request.form['newAmount']
-        item.weight = request.form['newWeight']
-        item.volume = request.form['newVolume']
-        if request.form['category'] == 'newCategory':
-            item.category = request.form["newCategoryValue"]
+        item.name = request.form['updateName'].lower()
+        item.description = request.form['updateDescription'].lower()
+        item.amount = request.form['updateAmount'].lower()
+        item.weight = request.form['updateWeight'].lower()
+        item.volume = request.form['updateVolume'].lower()
+        if "updateCategory" not in request.form or (request.form['updateCategory']=='newCategory' and request.form["newCategoryValue"]==''):
+            item.category = 'none'
+        elif request.form['updateCategory'] == 'newCategory':
+            item.category = request.form["newCategoryValue"].lower()
         else:
-            item.category = request.form['category']
+            item.category = request.form['updateCategory'].lower()
         session.add(item)
         session.commit()
         return redirect(url_for('showGear'))
@@ -188,17 +190,17 @@ def addItem():
     session = DBSession()
     if request.method == 'POST':
         newItem = Items()
-        newItem.name = request.form["name"]
-        newItem.description = request.form["description"]
-        newItem.amount = request.form["amount"]
-        newItem.weight = request.form["weight"]
-        newItem.volume = request.form["volume"]
-        if not request.form["category"]:
-            newItem.category = 'None'
+        newItem.name = request.form["name"].lower()
+        newItem.description = request.form["description"].lower()
+        newItem.amount = request.form["amount"].lower()
+        newItem.weight = request.form["weight"].lower()
+        newItem.volume = request.form["volume"].lower()
+        if "category" not in request.form or (request.form['category']=='newCategory' and request.form["newCategoryValue"]==''):
+            newItem.category = 'none'
         elif request.form["category"] == 'newCategory':
-            newItem.category = request.form["newCategoryValue"]
+            newItem.category = request.form["newCategoryValue"].lower()
         else:
-            newItem.category = request.form["category"]
+            newItem.category = request.form["category"].lower()
         newItem.user_id = login_session.get('manualID')
         session.add(newItem)
         session.commit()
