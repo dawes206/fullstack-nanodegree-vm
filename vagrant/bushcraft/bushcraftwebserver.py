@@ -60,8 +60,8 @@ def home():
     # return "current session is %s" %login_session["state"]
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
-    packs = session.query(User.pack_name).all()
-    return render_template('allpacks.html', packs = packs)
+    users = session.query(User).all()
+    return render_template('allpacks.html', users = users)
 
 @app.route('/login')
 def login():
@@ -115,22 +115,22 @@ def showGear():
     }
     return render_template('mygear.html', data = data)
 
-@app.route('/mypack')
-def showPack():
+@app.route('/<int:userID>/mypack')
+def showPack(userID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     catDict = {}
-    categories = session.query(Items.category).filter(Items.user_id==login_session.get('manualID'), Items.packed==True).group_by(Items.category).all()
+    categories = session.query(Items.category).filter(Items.user_id==userID, Items.packed==True).group_by(Items.category).all()
     for i in categories:
         catDict[i.category] = session.query(Items).filter_by(
-        user_id=login_session.get('manualID'),
+        user_id= userID,
         category=i.category,
         packed=True
         ).all()
-    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==login_session.get('manualID'), Items.packed==True).first().totalWeight
-    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==login_session.get('manualID'), Items.packed==True).first().totalVol
+    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==userID, Items.packed==True).first().totalWeight
+    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==userID, Items.packed==True).first().totalVol
     print('-----------------------', categories)
     data = {
         # 'items': items,

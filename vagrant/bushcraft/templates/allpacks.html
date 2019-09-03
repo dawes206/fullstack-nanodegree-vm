@@ -7,8 +7,8 @@
       <h1 style="display:inline-block">All packs</h1>
       <a href="{{url_for('gdisconnect')}}">Log Out</a>
     </div>
-    {%for p in packs%}
-    <a href = "/mypack">{{p}}</a>
+    {%for user in users%}
+    <a href = "/{{user.id}}/mypack">{{user.name}}'s {{user.pack_name}}</a>
     {%endfor%}
     </body>
 </html>
