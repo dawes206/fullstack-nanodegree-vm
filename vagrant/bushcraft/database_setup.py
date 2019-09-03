@@ -26,6 +26,7 @@ class Items(Base, ):
     __tablename__ = 'bushcrafting_items'
 
     name = Column(String(80), nullable=False)
+    pack_name = Column(String(80))
     id = Column(Integer, primary_key=True)
     description = Column(String(250))
     price = Column(String(8))
@@ -36,6 +37,19 @@ class Items(Base, ):
     packed = Column(Boolean)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship(User)
+
+# class Pack(Base):
+#     __tablename__ = "all_packs"
+#
+#     name = Column(String(80), nullable=False)
+#     id = Column(Integer, primary_key=True)
+#     description = Column(String(250))
+#     category = Column(String(250))
+#     share = Column(Boolean)
+#     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+#     user = relationship(User)
+
+
 
     # @property
     # def serialize(self):
