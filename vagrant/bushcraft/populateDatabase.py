@@ -22,6 +22,7 @@ session = DBSession()
 user = User(name="Sally")
 user.id = 0
 user.email = "sally@email.com"
+user.pack_name = "winter pack"
 
 session.add(user)
 session.commit()
@@ -51,6 +52,7 @@ session.commit()
 user = User(name="Silas")
 user.id = 1
 user.email = "imatubadude2@gmail.com"
+user.pack_name = "day hike"
 
 session.add(user)
 session.commit()

@@ -1,0 +1,14 @@
+<html>
+<head>
+  <!-- <link rel = "stylesheet" href = "/static/style.css"/> -->
+</head>
+  <body style="text-transform:capitalize">
+    <div>
+      <h1 style="display:inline-block">All packs</h1>
+      <a href="{{url_for('gdisconnect')}}">Log Out</a>
+    </div>
+    {%for p in packs%}
+    <a href = "/mypack">{{p}}</a>
+    {%endfor%}
+    </body>
+</html>

@@ -55,6 +55,16 @@ item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8
 
 @app.route('/')
 def home():
+    if 'manualID' not in login_session:
+        return redirect(url_for("login"))
+    # return "current session is %s" %login_session["state"]
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    packs = session.query(User.pack_name).all()
+    return render_template('allpacks.html', packs = packs)
+
+@app.route('/login')
+def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
     # return "current session is %s" %login_session["state"]
@@ -70,7 +80,7 @@ def home():
 @app.route('/mygear', methods=['GET', 'POST'])
 def showGear():
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     # items = session.query(Items).filter_by(user_id=manualID).all()
@@ -108,7 +118,7 @@ def showGear():
 @app.route('/mypack')
 def showPack():
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     catDict = {}
@@ -133,13 +143,13 @@ def showPack():
 @app.route('/mygear/edit')
 def editGear():
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     return render_template('mypackedit.html')
 
 @app.route('/<int:itemID>/edit', methods=['GET', 'POST'])
 def editItem(itemID):
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     if request.method == 'POST':
         DBSession = sessionmaker(bind=engine)
         session = DBSession()
@@ -170,7 +180,7 @@ def editItem(itemID):
 @app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
 def deleteItem(itemID):
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter(Items.id==itemID, Items.user_id==login_session.get('manualID')).first()
@@ -185,7 +195,7 @@ def deleteItem(itemID):
 @app.route('/additem', methods=['GET','POST'])
 def addItem():
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     if request.method == 'POST':
@@ -308,7 +318,7 @@ def googleLogin():
 @app.route('/gdisconnect', methods = ["GET"])
 def gdisconnect():
     if 'manualID' not in login_session:
-        return redirect(url_for("home"))
+        return redirect(url_for("login"))
     url = 'https://accounts.google.com/o/oauth2/revoke?token=%s' % login_session['access_token'] #<------added 1 at end of url because I don't want to revoke token during ts
     h = httplib2.Http()
     disconnectResponse = json.loads(h.request(url)[1].decode('UTF-8'))
