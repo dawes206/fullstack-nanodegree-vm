@@ -55,13 +55,17 @@ item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8
 
 @app.route('/')
 def home():
-    if 'manualID' not in login_session:
-        return redirect(url_for("login"))
+    # if 'manualID' not in login_session:
+    #     return redirect(url_for("login"))
     # return "current session is %s" %login_session["state"]
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     users = session.query(User).all()
-    return render_template('allpacks.html', users = users)
+    if 'manualID' in login_session:
+        loggedIn = True
+    else:
+        loggedIn = False
+    return render_template('allpacks.html', users = users, loggedIn = loggedIn)
 
 @app.route('/login')
 def login():
@@ -117,8 +121,6 @@ def showGear():
 
 @app.route('/<int:userID>/mypack')
 def showPack(userID):
-    if 'manualID' not in login_session:
-        return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     catDict = {}

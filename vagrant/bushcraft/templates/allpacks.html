@@ -5,10 +5,16 @@
   <body style="text-transform:capitalize">
     <div>
       <h1 style="display:inline-block">All packs</h1>
+      {%if loggedIn%}
       <a href="{{url_for('gdisconnect')}}">Log Out</a>
+      {%else%}
+      <a href="{{url_for('login')}}">Log In</a>
+      {%endif%}
     </div>
     {%for user in users%}
-    <a href = "/{{user.id}}/mypack">{{user.name}}'s {{user.pack_name}}</a>
+    <div>
+      <a href = "/{{user.id}}/mypack">{{user.name}}'s {{user.pack_name}}</a>
+      </div>
     {%endfor%}
     </body>
 </html>
