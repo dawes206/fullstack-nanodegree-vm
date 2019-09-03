@@ -3,6 +3,9 @@
     <span>
       <h1>My Pack</h1>
     </span>
+    {%if data.loggedUser%}
+    <a href = "{{url_for('showGear')}}"><button>Edit Pack</button></a>
+    {%endif%}
     {%if data.catDict%}
     <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
     <div>{{data.totalVolume}} L</div>
@@ -39,6 +42,6 @@
     </p>
     {%endif%}
     <br/>
-    <a href="{{url_for('showGear')}}"><button>Back To Gear</button></a>
+    <a href="{{url_for('home')}}"><button>Back To All Packs</button></a>
     </body>
 </html>

@@ -95,7 +95,7 @@ def showGear():
             i.packed = False
             session.add(i)
         session.commit()
-        return redirect(url_for('showPack'))
+        return redirect(url_for('showPack', userID = login_session.get('manualID')))
 
     catDict = {}
     categories = session.query(Items.category).filter(Items.user_id==login_session.get('manualID')).group_by(Items.category).all()
@@ -132,11 +132,16 @@ def showPack(userID):
     totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==userID, Items.packed==True).first().totalWeight
     totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==userID, Items.packed==True).first().totalVol
     print('-----------------------', categories)
+    if userID == login_session.get('manualID'):
+        loggedUser = True
+    else:
+        loggedUser = False
     data = {
         # 'items': items,
         'totalWeight' : totalWeight,
         'totalVolume' : totalVolume,
-        'catDict' : catDict
+        'catDict' : catDict,
+        'loggedUser' : loggedUser
     }
     return render_template('mypack.html', data=data)
 
