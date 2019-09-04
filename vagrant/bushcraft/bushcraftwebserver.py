@@ -67,6 +67,20 @@ def home():
         loggedIn = False
     return render_template('allpacks.html', users = users, loggedIn = loggedIn)
 
+@app.route('/allPacksJson')
+def getPacksJson():
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    pack_info = session.query(User.pack_name, User.pack_description, func.sum(Items.weight).label('Total_Weight(Oz)'), func.sum(Items.volume).label('Total_Volume(L)')).join(Items).filter(Items.packed==True).group_by(Items.user_id).all()
+    def serialize(pack):
+        dictionary = {}
+        for key in pack.keys():
+            dictionary[key] = getattr(pack, key)
+        return dictionary
+    return jsonify([serialize(pack) for pack in pack_info])
+
+
+
 @app.route('/login')
 def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))

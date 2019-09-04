@@ -23,6 +23,7 @@ user = User(name="Sally")
 user.id = 0
 user.email = "sally@email.com"
 user.pack_name = "winter pack"
+user.pack_description = "Winter pack meant for 1-2 days in -20 F to 30 F."
 
 session.add(user)
 session.commit()
@@ -53,6 +54,7 @@ user = User(name="Silas")
 user.id = 1
 user.email = "imatubadude2@gmail.com"
 user.pack_name = "day hike"
+user.pack_description = "Simple pack for a day hike of 5-10 miles. Includes hatchet and tarp for practice setting up a camp during breaks"
 
 session.add(user)
 session.commit()

@@ -45,3 +45,8 @@ center tables
 Radio buttons for categories
 include "no category" instead of nothing
 Add oz and L to edit and new item page
+
+
+
+Now I have made it so that I can implement the json api in a meaningful way. Just have to do that, work on the readme file, and do some finishing touches.
+Do it in that order! You will always find other stuff to do besides the readme. So, do it right after you have json api's!!!!!!!!!!!!!

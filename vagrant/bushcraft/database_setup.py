@@ -13,15 +13,19 @@ class User(Base):
     id = Column(Integer, primary_key=True)
     email = Column(String(80), nullable = False)
     pack_name = Column(String(80))
+    pack_description = Column(String(140))
 
-    # @property
-    # def serialize(self):
-    #     #returns object data in easily seializable format
-    #     return {
-    #             'name': self.name,
-    #             'description': self.description,
-    #             'id': self.id
-    #         }
+    @property
+    def serialize(self):
+        #returns object data in easily seializable format
+        return {
+                'name': self.name,
+                'description': self.description,
+                'id': self.id,
+                'email': self.email,
+                'pack_name': self.pack_name,
+                'pack_description': self.pack_description,
+            }
 
 class Items(Base, ):
     __tablename__ = 'bushcrafting_items'
@@ -37,6 +41,23 @@ class Items(Base, ):
     packed = Column(Boolean)
     user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
     user = relationship(User)
+
+    @property
+    def serialize(self):
+        #returns object data in easily seializable format
+        return {
+                'name': self.name,
+                'description': self.description,
+                'id': self.id,
+                'price': self.price,
+                'category': self.category,
+                'weight': self.weight,
+                'volume': self.volume,
+                'amount': self.amount,
+                'packed': self.packed,
+                'user_id': self.user_id,
+                'user': self.user
+            }
 
 # class Pack(Base):
 #     __tablename__ = "all_packs"
