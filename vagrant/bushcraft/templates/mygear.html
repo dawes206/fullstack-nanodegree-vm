@@ -23,7 +23,7 @@
     <!-- <div style="display:inline-block">{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
     <div style="display:inline-block">{{data['totalVolume']}} L</div> -->
     <br/>
-    <form action="{{url_for('showGear')}}" method="POST">
+    <form action="{{url_for('showGear', userID = data.userID)}}" method="POST">
     {%for i in data.catDict.keys()%}
     <h2>
       {{i}}
@@ -40,7 +40,7 @@
           <input type="checkbox" name="{{j.id}}" {%if j.packed%}checked{%endif%}/>
         </td>
         <td>
-          <a href="{{url_for('editItem', itemID=j.id)}}">{{j.name}}</a>
+          <a href="{{url_for('editItem', userID = data.userID, itemID=j.id)}}">{{j.name}}</a>
         </td>
         <td>{{j.weight}} oz</td>
         <td>{{j.volume}} L</td>
@@ -49,11 +49,11 @@
     </table>
     {%endfor%}
     <br/>
-    <a href="{{url_for('addItem')}}"><button type="button">Add Item</button></a>
+    <a href="{{url_for('addItem', userID=data.userID)}}"><button type="button">Add Item</button></a>
     <input type="submit" value="Save changes" />
   </form>
   {%else%}
-  <a href="{{url_for('addItem')}}"><button>Add Item</button></a>
+  <a href="{{url_for('addItem', userID=data.userID)}}"><button>Add Item</button></a>
   {%endif%}
     <!-- <ul style="list-style-type:none">
     {%for i in items%}

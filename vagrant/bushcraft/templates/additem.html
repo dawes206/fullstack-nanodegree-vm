@@ -1,7 +1,7 @@
 <html>
   <body>
     <h1>New Item</h1>
-    <form action="{{url_for('addItem')}}" method="POST">
+    <form action="{{url_for('addItem', userID=userID)}}" method="POST">
       <p>
         Name:
       </p>
@@ -33,6 +33,6 @@
         <input type="submit" value="Add"/>
       </p>
     </form>
-    <a href="{{url_for('showGear')}}"><button type="button">Cancel</button></a>
+    <a href="{{url_for('showGear', userID=userID)}}"><button type="button">Cancel</button></a>
     </body>
 </html>

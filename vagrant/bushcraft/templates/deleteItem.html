@@ -1,11 +1,11 @@
 <html>
   <body>
-    <form action="{{url_for('deleteItem', itemID=item.id)}}", method='POST'>
+    <form action="{{url_for('deleteItem', userID = userID, itemID=item.id)}}", method='POST'>
       <p>
         Are you sure you want to delete {{item.name}}?
         </p>
       <input type="submit" value=Delete />
-      <a href="{{url_for('editItem', itemID=item.id)}}"><button type="button">Cancel</button></a>
+      <a href="{{url_for('editItem', userID = userID, itemID=item.id)}}"><button type="button">Cancel</button></a>
     </form>
     </body>
 </html>

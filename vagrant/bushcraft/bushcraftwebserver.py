@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-#Next thing you're working on is edit menu item and delte menu item. Then you should be done with this iteration in the lesson
-
-#Next thing I need to do is figure out how to sign out of google, that way I can test, step by step, what lorenzo is doing. What I want to test next is that the ajax call is working properly, by making a console.log, or similar, in the gconnect section of this file.
-
 # from sqlalchemy import create_engine, text, func
 # from sqlalchemy.orm import sessionmaker
 # from database_setup import Base, User, Items
@@ -16,7 +12,6 @@
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash
 app = Flask(__name__)
 app.secret_key = 'super_secret_key'
-
 
 from sqlalchemy import create_engine, func
 from sqlalchemy.orm import sessionmaker
@@ -37,27 +32,12 @@ CLIENT_ID = json.loads(open('client_secrets.json', 'r').read())['web']['client_i
 
 engine = create_engine('sqlite:///bushcrafting.db')
 Base.metadata.bind = create_engine
-#
+
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
-#Fake User
-user1 = {'name': 'Silas', 'id': '1'}
-
-# restaurants = [{'name': 'The CRUDdy Crab', 'id': '1', 'description':'good crab'}, {'name':'Blue Burgers', 'id':'2', 'description':'great burger'},{'name':'Taco Hut', 'id':'3', 'description':'best tacos'}]
-# restaurants = []
-#
-#Fake Items
-# items = [ {'name':'Cheese Pizza', 'description':'made with fresh cheese', 'price':'$5.99','course' :'Entree', 'id':'1'}, {'name':'Chocolate Cake','description':'made with Dutch Chocolate', 'price':'$3.99', 'course':'Dessert','id':'2'},{'name':'Caesar Salad', 'description':'with fresh organic vegetables','price':'$5.99', 'course':'Entree','id':'3'},{'name':'Iced Tea', 'description':'with lemon','price':'$.99', 'course':'Beverage','id':'4'},{'name':'Spinach Dip', 'description':'creamy dip with fresh spinach','price':'$1.99', 'course':'Appetizer','id':'5'} ]
-item1 =  {'name':'Silky Saw','description':'good saw','price':'$45','weight' :'8'}
-
-# items = []
-
 @app.route('/')
 def home():
-    # if 'manualID' not in login_session:
-    #     return redirect(url_for("login"))
-    # return "current session is %s" %login_session["state"]
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     users = session.query(User).all()
@@ -72,6 +52,7 @@ def getPacksJson():
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     pack_info = session.query(User.pack_name, User.pack_description, func.sum(Items.weight).label('Total_Weight(Oz)'), func.sum(Items.volume).label('Total_Volume(L)')).join(Items).filter(Items.packed==True).group_by(Items.user_id).all()
+    #Displaying query result with group_by parameter means I am unable to access Items.serialize. Create serialize function to serialize results of pack_info
     def serialize(pack):
         dictionary = {}
         for key in pack.keys():
@@ -83,20 +64,14 @@ def getPacksJson():
 def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
     login_session['state'] = state
-    # return "current session is %s" %login_session["state"]
     return render_template('welcome.html', STATE = state)
-    # DBSession = sessionmaker(bind=engine)
-    # session = DBSession()
-    # restaurants = session.query(Restaurant).all()
-    # if not restaurants:
-    #     return "No restaurants in database"
-    # else:
-    #     return render_template('home.html', restaurants = restaurants)
 
-@app.route('/mygear', methods=['GET', 'POST'])
-def showGear():
+@app.route('/<int:userID>/mygear', methods=['GET', 'POST'])
+def showGear(userID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
+    elif userID is not login_session.get('manualID'):
+        return "You are trying to access someone else's stuff"
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     # items = session.query(Items).filter_by(user_id=manualID).all()
@@ -127,7 +102,8 @@ def showGear():
         # 'items': items,
         'totalWeight' : totalWeight,
         'totalVolume' : totalVolume,
-        'catDict' : catDict
+        'catDict' : catDict,
+        'userID' : userID
     }
     return render_template('mygear.html', data = data)
 
@@ -155,7 +131,8 @@ def showPack(userID):
         'totalWeight' : totalWeight,
         'totalVolume' : totalVolume,
         'catDict' : catDict,
-        'loggedUser' : loggedUser
+        'loggedUser' : loggedUser,
+        'userID' : userID
     }
     return render_template('mypack.html', data=data)
 
@@ -166,21 +143,21 @@ def showPackJson(userID):
     items = session.query(Items).filter(Items.user_id==userID, Items.packed==True).all()
     return jsonify([item.serialize for item in items ])
 
-@app.route('/pack/<int:itemID>')
-def showItem(itemID):
+@app.route('/<int:userID>/mypack/<int:itemID>')
+def showItem(userID, itemID):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter(Items.id == itemID).first()
     return render_template('itemshow.html', item = item)
 
-@app.route('/mygear/edit')
-def editGear():
+@app.route('/<int:userID>/mygear/edit')
+def editGear(userID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
     return render_template('mypackedit.html')
 
-@app.route('/<int:itemID>/edit', methods=['GET', 'POST'])
-def editItem(itemID):
+@app.route('/<int:userID>/mypack/<int:itemID>/edit', methods=['GET', 'POST'])
+def editItem(userID, itemID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
     if request.method == 'POST':
@@ -200,7 +177,7 @@ def editItem(itemID):
             item.category = request.form['updateCategory'].lower()
         session.add(item)
         session.commit()
-        return redirect(url_for('showGear'))
+        return redirect(url_for('showGear', userID = userID))
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter_by(user_id=login_session.get('manualID'), id=itemID).all()
@@ -208,17 +185,17 @@ def editItem(itemID):
     catList = list(map(lambda x: x[0], categories))
     if not item:
         return "trying to access someone elses stuff"
-    return render_template('itemedit.html', item = item, categories=catList)
+    return render_template('itemedit.html', item = item, categories=catList, userID=userID)
 
-@app.route('/<int:itemID>/json')
-def itemJson(itemID):
+@app.route('/<int:userID>/mypack/<int:itemID>/json')
+def itemJson(userID, itemID):
     DBSession = sessionmaker(bind=engine)
     session = DBSession()
     item = session.query(Items).filter(Items.id==itemID).first()
     return jsonify(item.serialize)
 
-@app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
-def deleteItem(itemID):
+@app.route('/<int:userID>/mypack/<int:itemID>/delete', methods=['GET', 'POST'])
+def deleteItem(userID, itemID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
@@ -229,11 +206,11 @@ def deleteItem(itemID):
     if request.method=='POST':
         session.delete(item)
         session.commit()
-        return redirect(url_for("showGear"))
-    return render_template('deleteItem.html', item=item)
+        return redirect(url_for("showGear", userID = userID))
+    return render_template('deleteItem.html', userID = userID, item=item)
 
-@app.route('/additem', methods=['GET','POST'])
-def addItem():
+@app.route('/<int:userID>/mypack/additem', methods=['GET','POST'])
+def addItem(userID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
     DBSession = sessionmaker(bind=engine)
@@ -254,10 +231,10 @@ def addItem():
         newItem.user_id = login_session.get('manualID')
         session.add(newItem)
         session.commit()
-        return redirect(url_for("showGear"))
+        return redirect(url_for("showGear", userID = userID))
     categories = session.query(Items.category).filter_by(user_id=login_session.get('manualID')).group_by(Items.category).all()
     catList = list(map(lambda x: x[0], categories))
-    return render_template('additem.html', categories=catList)
+    return render_template('additem.html', categories=catList, userID = userID)
 
 @app.route('/gconnect', methods=['POST'])
 def googleLogin():

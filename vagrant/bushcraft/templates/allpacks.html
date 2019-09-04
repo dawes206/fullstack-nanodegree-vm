@@ -13,7 +13,7 @@
     </div>
     {%for user in users%}
     <div>
-      <a href = "/{{user.id}}/mypack">{{user.name}}'s {{user.pack_name}}</a>
+      <a href = "{{url_for('showPack', userID=user.id)}}">{{user.name}}'s {{user.pack_name}}</a>
       </div>
     {%endfor%}
     </body>
