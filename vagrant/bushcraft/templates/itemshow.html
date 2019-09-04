@@ -1,0 +1,68 @@
+<html>
+  <body>
+    <h1>{{item.name}}</h1>
+    <table>
+      <tr>
+        <td>Name</td>
+        <td>{{item.name}}</td>
+      </tr>
+      <tr>
+        <td>Description</td>
+        <td>{{item.description}}</td>
+      </tr>
+      <tr>
+        <td>Amount</td>
+        <td>{{item.amount}}</td>
+      </tr>
+      <tr>
+        <td>Weight</td>
+        <td>{{item.weight}} Oz</td>
+      </tr>
+      <tr>
+        <td>Volume</td>
+        <td>{{item.volume}} L</td>
+      </tr>
+      <tr>
+        <td>Category</td>
+        <td>{{item.category}}</td>
+      </tr>
+    </table>
+
+    <!-- <form action="{{url_for('editItem', itemID=item.id)}}", method='POST'>
+      <p>
+        Name:
+      </p>
+      <input type="text" name="updateName" value="{{item.name}}">
+      <p>
+        Description:
+      </p>
+      <input type="text" name="updateDescription" value="{{item.description}}"/>
+      <p>
+        Amount:
+      </p>
+      <input type="text" name="updateAmount" value="{{item.amount}}"/>
+      <p>
+        Weight:
+      </p>
+      <input type="text" name="updateWeight" value="{{item.weight}}"
+      pattern="[0-9]+.*[0-9]*"/>
+      <p>
+        Volume:
+      </p>
+      <input type="text" name="updateVolume" value="{{item.volume}}"
+      pattern="[0-9]+.*[0-9]*"/>
+      <input type = "checkbox" />Inside another
+      <p>
+        Subcategory:
+      </p>
+      {%for cat in categories%}
+      <input type="radio" name="updateCategory" value="{{cat}}" {%if item.category==cat%} checked {%endif%}/>{{cat}}
+      {%endfor%}
+      <input type="radio" name="updateCategory" value="newCategory"/>Other: <input type="text" name="newCategoryValue" placeholder="New Category"/>
+      <br/>
+      <input type = 'submit', value="Save Item"/>
+      <a href="{{url_for('deleteItem', itemID=item.id)}}"><button type="button">Delete Item</button></a>
+    </form> -->
+    <a href="{{url_for('showPack', userID = item.user_id)}}"><button type="button">Back To Gear</button></a>
+    </body>
+</html>

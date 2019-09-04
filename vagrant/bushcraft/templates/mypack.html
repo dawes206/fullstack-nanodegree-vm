@@ -14,7 +14,7 @@
     <table>
       {%for j in data.catDict[i]%}
       <tr>
-        <td>{{j.name}}</td>
+        <td><a href = "{{url_for('showItem', itemID = j.id)}}">{{j.name}}</a></td>
         <td>{{j.weight}} oz</td>
         <td>{{j.volume}} L</td>
         {%endfor%}

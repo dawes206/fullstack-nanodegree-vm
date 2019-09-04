@@ -166,6 +166,13 @@ def showPackJson(userID):
     items = session.query(Items).filter(Items.user_id==userID, Items.packed==True).all()
     return jsonify([item.serialize for item in items ])
 
+@app.route('/pack/<int:itemID>')
+def showItem(itemID):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    item = session.query(Items).filter(Items.id == itemID).first()
+    return render_template('itemshow.html', item = item)
+
 @app.route('/mygear/edit')
 def editGear():
     if 'manualID' not in login_session:
