@@ -1,7 +1,8 @@
 ## Item Catalog
 This app is meant to be used by those who regularly backpack or bushcraft. Users can keep track of all of their gear and choose which gear to take on their next trip. Users can also see the packs of other users to get ideas about what they should add to their own supplies.
 
-Note: Rather than creating a catalog similar to the restaurant application shown in the lessons, I went for something a little different to test out my skills. While not a "Catalog" in the traditional sense, my bushcrafting web app handles nearly all the same functionality as the restaurant catalog, and demonstrates comprehension of the course material. The only functionality it may be lacking is the ability to click on a category and display all items in that category. Never the less, the app does organize all pack items into categories and displays them for the user.
+*Design Note:* 
+Rather than creating a catalog similar to the restaurant application shown in the lessons, I went for something a little different to test out my skills. While not a "Catalog" in the traditional sense, my bushcrafting web app handles nearly all the same functionality as the restaurant catalog, and demonstrates comprehension of the course material. The only functionality it may be lacking is the ability to click on a category and display all items in that category. Never the less, the app does organize all pack items into categories and displays them for the user.
 
 ## Important pages
 <li>/</li> Displays all the packs saved into the database
