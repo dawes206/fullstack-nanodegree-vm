@@ -1,0 +1,7 @@
+body {
+  text-transform:capitalize
+}
+
+.description {
+  text-transform:initial;
+}

@@ -81,7 +81,6 @@ def showPack(userID):
     totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==userID, Items.packed==True).first().totalWeight
     totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==userID, Items.packed==True).first().totalVol
     user_info = session.query(User).filter(User.id == userID).first()
-    print('-----------------------', categories)
     if userID == login_session.get('manualID'):
         loggedUser = True
     else:
@@ -152,15 +151,6 @@ def showGear(userID):
         'userID' : userID
     }
     return render_template('mygear.html', data = data, packInfo=packInfo)
-
-# @app.route('/<int:userID>/mypack/edit')
-# def editPack(userID):
-#     if 'manualID' not in login_session:
-#         return redirect(url_for("login"))
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     packInfo = session.query(User).filter(User.id == userID).first()
-#     return render_template('mypackedit.html', packInfo = packInfo)
 
 @app.route('/<int:userID>/mypack/<int:itemID>/edit', methods=['GET', 'POST'])
 def editItem(userID, itemID):
@@ -274,7 +264,6 @@ def googleLogin():
         return response
 
     if resultAPICert['issued_to'] != CLIENT_ID:
-        print("----------HOT DOG----------------------")
         response = make_response(json.dumps('Certified client_ID does not match app client_ID'), 500)
         response.headers['Content-Type'] = 'application.json'
         return response
@@ -282,14 +271,9 @@ def googleLogin():
 
     #Check if user already loged in
     if login_session.get('access_token') == 3 and login_session.get('gplus_id') == credentials.id_token['sub']: #<--------changed to prevent error whyile ts. change is not None to is 3
-        print ("----------------login_+session access--------------", login_session.get('access_token'))
         response = make_response(json.dumps('current user already connected'), 200)
         response.headers['Content-Type'] = 'application.json'
         return response
-
-    print("------------------request-------------------", h.request(url))
-    print("--------------------------------------------", resultAPICert['user_id'])
-    print("----------------resultAPICertError-----------------", resultAPICert.get('error'))
 
     #add session info to session
     login_session['access_token'] = credentials.access_token
@@ -297,9 +281,6 @@ def googleLogin():
 
     userInfoResponse = requests.get('https://www.googleapis.com/oauth2/v1/userinfo',
         {'access_token': login_session['access_token'], 'alt': 'json'}).json()
-
-    print("----------------user_info-----------", userInfoResponse)
-    print("----------------user name-----------", userInfoResponse['given_name'])
 
     #add user to databse
     DBSession = sessionmaker(bind=engine)
@@ -310,8 +291,6 @@ def googleLogin():
         response = make_response(json.dumps({'success':True}), 200)
         response.headers['Content-Type'] = 'application.json'
         login_session['manualID'] = user.id
-        print("----------------not new-----------")
-        print('----------------lgin session----------', login_session.get('manualID'))
         return userInfoResponse['given_name']
 
     newUser = User()
@@ -320,7 +299,6 @@ def googleLogin():
     session.add(newUser)
     session.commit()
     login_session['manualID'] = newUser.id
-    print('----------------lgin session----------', login_session.get('manualID'))
     response = make_response(json.dumps({'success':True}), 200)
     response.headers['Content-Type'] = 'application.json'
     return userInfoResponse['given_name']
@@ -333,15 +311,11 @@ def gdisconnect():
     h = httplib2.Http()
     disconnectResponse = json.loads(h.request(url)[1].decode('UTF-8'))
     if disconnectResponse.get('error'):
-        print('-----------------reason-------------', disconnectResponse)
-        print('------------------login_session token-----------', login_session['access_token'])
         return "failed to log off"
     del login_session['access_token']
     del login_session['manualID']
     del login_session['gplus_id']
     del login_session['state']
-    if 'access_token' not in login_session:
-        print('------------------access_token gone-----------')
     return "successfully logged off"
 
 

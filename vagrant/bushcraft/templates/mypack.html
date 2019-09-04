@@ -1,13 +1,16 @@
 <html>
+<head>
+  <link rel = stylesheet type =text/css href = "../static/styles/styles.css" />
+</head>
   <body>
     <span>
       <h1>{{user_info.pack_name}}</h1>
-      <p>
+      <p class="description">
         {{user_info.pack_description}}
       </p>
     </span>
     {%if data.loggedUser%}
-    <a href = "{{url_for('showGear', userID = data.userID)}}"><button>Edit Pack</button></a>
+    <a href = "{{url_for('showGear', userID=user_info.id)}}"><button>Edit Pack</button></a>
     {%endif%}
     {%if data.catDict%}
     <div>{{data.totalWeight//16}} lb {{data.totalWeight%16}} oz</div>
@@ -17,7 +20,7 @@
     <table>
       {%for j in data.catDict[i]%}
       <tr>
-        <td><a href = "{{url_for('showItem', itemID = j.id, userID=data.userID)}}">{{j.name}}</a></td>
+        <td><a href = "{{url_for('showItem', itemID = j.id, userID=user_info.id)}}">{{j.name}}</a></td>
         <td>{{j.weight}} oz</td>
         <td>{{j.volume}} L</td>
         {%endfor%}
