@@ -166,7 +166,6 @@ def showPackJson(userID):
     items = session.query(Items).filter(Items.user_id==userID, Items.packed==True).all()
     return jsonify([item.serialize for item in items ])
 
-
 @app.route('/mygear/edit')
 def editGear():
     if 'manualID' not in login_session:
@@ -203,6 +202,13 @@ def editItem(itemID):
     if not item:
         return "trying to access someone elses stuff"
     return render_template('itemedit.html', item = item, categories=catList)
+
+@app.route('/<int:itemID>/json')
+def itemJson(itemID):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    item = session.query(Items).filter(Items.id==itemID).first()
+    return jsonify(item.serialize)
 
 @app.route('/<int:itemID>/delete', methods=['GET', 'POST'])
 def deleteItem(itemID):

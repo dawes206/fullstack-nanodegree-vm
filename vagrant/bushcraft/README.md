@@ -2,6 +2,18 @@
 
 
 
+##Steps for database_setup
+
+## pre-requisite Knowledge
+
+## Getting started
+
+##API's
+
+
+
+
+
 
 ## LogsAnalysis
 LogsAnalysis is a simple python script used to answer 3 questions about the traffic data stored in a news agency's database; what are the agency's most popular articles, who are the most popular authors, and when did users have the hardest time navigating to the agency's website?
