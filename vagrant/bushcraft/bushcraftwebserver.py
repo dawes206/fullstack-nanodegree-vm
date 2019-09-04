@@ -66,47 +66,6 @@ def login():
     login_session['state'] = state
     return render_template('welcome.html', STATE = state)
 
-@app.route('/<int:userID>/mygear', methods=['GET', 'POST'])
-def showGear(userID):
-    if 'manualID' not in login_session:
-        return redirect(url_for("login"))
-    elif userID is not login_session.get('manualID'):
-        return "You are trying to access someone else's stuff"
-    DBSession = sessionmaker(bind=engine)
-    session = DBSession()
-    # items = session.query(Items).filter_by(user_id=manualID).all()
-    if request.method=='POST':
-        entries = request.form #<--returns immutable mutli-dict, which will still accept the "in" conditional statement
-        packedItems = session.query(Items).filter(Items.id.in_(entries), Items.user_id==login_session.get('manualID')).all()
-        unpackedItems = session.query(Items).filter(Items.id.notin_(entries), Items.user_id==login_session.get('manualID')).all()
-        for i in packedItems:
-            i.packed = True
-            session.add(i)
-        for i in unpackedItems:
-            i.packed = False
-            session.add(i)
-        session.commit()
-        return redirect(url_for('showPack', userID = login_session.get('manualID')))
-
-    catDict = {}
-    categories = session.query(Items.category).filter(Items.user_id==login_session.get('manualID')).group_by(Items.category).all()
-    for i in categories:
-        catDict[i.category] = session.query(Items).filter_by(
-        user_id=login_session.get('manualID'),
-        category=i.category
-        ).all()
-
-    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==login_session.get('manualID')).first().totalWeight
-    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==login_session.get('manualID')).first().totalVol
-    data = {
-        # 'items': items,
-        'totalWeight' : totalWeight,
-        'totalVolume' : totalVolume,
-        'catDict' : catDict,
-        'userID' : userID
-    }
-    return render_template('mygear.html', data = data)
-
 @app.route('/<int:userID>/mypack')
 def showPack(userID):
     DBSession = sessionmaker(bind=engine)
@@ -121,20 +80,20 @@ def showPack(userID):
         ).all()
     totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==userID, Items.packed==True).first().totalWeight
     totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==userID, Items.packed==True).first().totalVol
+    user_info = session.query(User).filter(User.id == userID).first()
     print('-----------------------', categories)
     if userID == login_session.get('manualID'):
         loggedUser = True
     else:
         loggedUser = False
     data = {
-        # 'items': items,
         'totalWeight' : totalWeight,
         'totalVolume' : totalVolume,
         'catDict' : catDict,
         'loggedUser' : loggedUser,
         'userID' : userID
     }
-    return render_template('mypack.html', data=data)
+    return render_template('mypack.html', data=data, user_info = user_info)
 
 @app.route('/<int:userID>/mypack/json')
 def showPackJson(userID):
@@ -150,11 +109,58 @@ def showItem(userID, itemID):
     item = session.query(Items).filter(Items.id == itemID).first()
     return render_template('itemshow.html', item = item)
 
-@app.route('/<int:userID>/mygear/edit')
-def editGear(userID):
+@app.route('/<int:userID>/mygear', methods=['GET', 'POST'])
+def showGear(userID):
     if 'manualID' not in login_session:
         return redirect(url_for("login"))
-    return render_template('mypackedit.html')
+    elif userID is not login_session.get('manualID'):
+        return "You are trying to access someone else's stuff"
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    if request.method=='POST':
+        entries = request.form #<--returns immutable mutli-dict, which will still accept the "in" conditional statement
+        packedItems = session.query(Items).filter(Items.id.in_(entries), Items.user_id==login_session.get('manualID')).all()
+        unpackedItems = session.query(Items).filter(Items.id.notin_(entries), Items.user_id==login_session.get('manualID')).all()
+        user = session.query(User).filter(User.id==userID).first()
+        for i in packedItems:
+            i.packed = True
+            session.add(i)
+        for i in unpackedItems:
+            i.packed = False
+            session.add(i)
+        user.pack_name = request.form['pack_name']
+        user.pack_description = request.form['pack_description']
+        session.add(user)
+        session.commit()
+        return redirect(url_for('showPack', userID = login_session.get('manualID')))
+
+    catDict = {}
+    categories = session.query(Items.category).filter(Items.user_id==login_session.get('manualID')).group_by(Items.category).all()
+    for i in categories:
+        catDict[i.category] = session.query(Items).filter_by(
+        user_id=login_session.get('manualID'),
+        category=i.category
+        ).all()
+
+    totalWeight = session.query(func.sum(Items.weight).label('totalWeight')).filter(Items.weight,Items.user_id==login_session.get('manualID')).first().totalWeight
+    totalVolume = session.query(func.sum(Items.volume).label('totalVol')).filter(Items.volume,Items.user_id==login_session.get('manualID')).first().totalVol
+    packInfo = session.query(User).filter(User.id == userID).first()
+    data = {
+        'totalWeight' : totalWeight,
+        'totalVolume' : totalVolume,
+        'catDict' : catDict,
+        'userID' : userID
+    }
+    return render_template('mygear.html', data = data, packInfo=packInfo)
+
+# @app.route('/<int:userID>/mypack/edit')
+# def editPack(userID):
+#     if 'manualID' not in login_session:
+#         return redirect(url_for("login"))
+#     DBSession = sessionmaker(bind=engine)
+#     session = DBSession()
+#     packInfo = session.query(User).filter(User.id == userID).first()
+#     return render_template('mypackedit.html', packInfo = packInfo)
 
 @app.route('/<int:userID>/mypack/<int:itemID>/edit', methods=['GET', 'POST'])
 def editItem(userID, itemID):
@@ -252,19 +258,6 @@ def googleLogin():
     credentials = client.credentials_from_clientsecrets_and_code('client_secrets.json',
     ['https://www.googleapis.com/auth/drive.appdata', 'profile', 'email'],
     request.data)
-    print("------------------id_token-------------------", credentials.id_token)
-    # http_auth = credentials.authorize(httplib2.Http())
-    # drive_service = discovery.build('drive', 'v3', http=http_auth)
-    # appfolder = drive_service.files().get(fileId='appfolder').execute()
-
-    print("------------------data-------------------", request.data.decode('UTF-8'))
-    # try:
-    # oauth_flow = flow_from_clientsecrets('client_secrets.json', scope='', redirect_uri = 'http://localhost:8080/mygear')
-    # credentials = oauth_flow.step2_exchange(code)
-    # except FlowExchangeError:
-    #     response = make_response(json.dumps('failed to get auth code'), 401)
-    #     response.headers['Content-Type'] = 'application.json'
-    #     return response
 
     url = 'https://www.googleapis.com/oauth2/v1/tokeninfo?access_token=%s' % credentials.access_token
     h = httplib2.Http()
@@ -350,118 +343,6 @@ def gdisconnect():
     if 'access_token' not in login_session:
         print('------------------access_token gone-----------')
     return "successfully logged off"
-
-# @app.route('/<int:restaurantID>/menu')
-# def showMenu(restaurantID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
-#     items = session.query(MenuItem).filter_by(restaurant_id = restaurantID).all()
-#     if not items:
-#         return render_template('menu.html', restaurant = restaurant, items = items)
-#     else:
-#         return render_template('menu.html', restaurant = restaurant, items = items)
-#
-# @app.route('/<int:restaurantID>/edit', methods = ['GET', 'POST'])
-# def editRestaurant(restaurantID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
-#     if request.method == 'POST':
-#         restaurant.name = request.form['newName']
-#         restaurant.description = request.form['newDesc']
-#         restaurant.image = r"/static/"+request.form['newPic']
-#         session.add(restaurant)
-#         session.commit()
-#         return redirect(url_for('home'))
-#     else:
-#         return render_template('editrestaurant.html', restaurant = restaurant)
-#
-# @app.route('/<int:restaurantID>/delete', methods = ['GET', 'POST'])
-# def deleteRestaurant(restaurantID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
-#     if request.method == 'POST':
-#         session.delete(restaurant)
-#         session.commit()
-#         return redirect(url_for('home'))
-#     else:
-#         return render_template('deleterestaurant.html',  restaurant = restaurant)
-#
-# @app.route('/addrestaurant', methods = ['GET', 'POST'])
-# def addRestaurant():
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     if request.method == 'POST':
-#         newRestaurant = Restaurant(name = request.form['newName'], description = request.form['newDesc'])
-#         session.add(newRestaurant)
-#         session.commit()
-#         return redirect(url_for('home'))
-#     else:
-#         return render_template('addrestaurant.html')
-#
-# @app.route('/<int:restaurantID>/menu/<int:itemID>/edit', methods = ['GET', 'POST'])
-# def editMenuItem(restaurantID,itemID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
-#     item = session.query(MenuItem).filter_by(id = itemID).one()
-#     if request.method == 'POST':
-#         item.name = request.form['newName']
-#         item.price = request.form['newPrice']
-#         item.description = request.form['newDesc']
-#         session.add(item)
-#         session.commit()
-#         return redirect(url_for('showMenu',restaurantID = restaurant.id))
-#     else:
-#         return render_template('editmenuitem.html', restaurant = restaurant, item = item)
-#
-# @app.route('/<int:restaurantID>/menu/<int:itemID>/delete', methods = ['GET', 'POST'])
-# def deleteMenuItem(restaurantID,itemID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
-#     item = session.query(MenuItem).filter_by(id=itemID).one()
-#     if request.method == 'POST':
-#         session.delete(item)
-#         session.commit()
-#         return redirect(url_for('showMenu',restaurantID = restaurant.id))
-#     else:
-#         return render_template('deletemenuitem.html', restaurant = restaurant, item = item)
-#
-# @app.route('/<int:restaurantID>/menu/addnewitem', methods = ['GET', 'POST'])
-# def addMenuItem(restaurantID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurant = session.query(Restaurant).filter_by(id = restaurantID).one()
-#     if request.method == 'POST':
-#         newItem = MenuItem(name = request.form['newName'], price = request.form['newPrice'], description = request.form['newDesc'], restaurant_id = restaurantID)
-#         session.add(newItem)
-#         session.commit()
-#         return redirect(url_for('showMenu', restaurantID = restaurantID))
-#     else:
-#         return render_template('newmenuitem.html', restaurant = restaurant)
-#
-# @app.route('/JSON')
-# def getRestaurantsJSON():
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     restaurants = session.query(Restaurant).all()
-#     return jsonify([rest.serialize for rest in restaurants])
-#
-# @app.route('/<int:restaurantID>/menu/JSON')
-# def getMenuJSON(restaurantID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     items = session.query(MenuItem).filter_by(restaurant_id = restaurantID).all()
-#     return jsonify([i.serialize for i in items])
-# @app.route('/<int:restaurantID>/menu/<int:itemID>/JSON')
-# def getItemJSON(restaurantID,itemID):
-#     DBSession = sessionmaker(bind=engine)
-#     session = DBSession()
-#     item = session.query(MenuItem).filter_by(id = itemID).one()
-#     return jsonify(item.serialize)
 
 
 if __name__ == '__main__':
