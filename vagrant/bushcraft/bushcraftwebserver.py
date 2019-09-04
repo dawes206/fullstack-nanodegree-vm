@@ -79,8 +79,6 @@ def getPacksJson():
         return dictionary
     return jsonify([serialize(pack) for pack in pack_info])
 
-
-
 @app.route('/login')
 def login():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in range(32))
@@ -160,6 +158,14 @@ def showPack(userID):
         'loggedUser' : loggedUser
     }
     return render_template('mypack.html', data=data)
+
+@app.route('/<int:userID>/mypack/json')
+def showPackJson(userID):
+    DBSession = sessionmaker(bind=engine)
+    session = DBSession()
+    items = session.query(Items).filter(Items.user_id==userID, Items.packed==True).all()
+    return jsonify([item.serialize for item in items ])
+
 
 @app.route('/mygear/edit')
 def editGear():

@@ -54,9 +54,7 @@ class Items(Base, ):
                 'weight': self.weight,
                 'volume': self.volume,
                 'amount': self.amount,
-                'packed': self.packed,
-                'user_id': self.user_id,
-                'user': self.user
+                'packed': self.packed
             }
 
 # class Pack(Base):
