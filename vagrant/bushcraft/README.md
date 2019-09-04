@@ -1,47 +1,26 @@
 ## Item Catalog
-
+This app is meant to be used by those who regularly backpack or bushcraft. Users can keep track of all of their gear and choose which gear to take on their next trip. Users can also see the packs of other users to get ideas about what they should add to their own supplies.
 
 
 ##Steps for database_setup
+1. Place bushcrafwebserver.py, client_secrets.json, database_setup.py, and populateDatabase.py into the folder shared between your host machine and your VM.
+2. SSH into your VM and navigate to the shared folder
+3. run the command `python3 populateDatabase.py`
+4. When the file finishes running, run the command `export FLASK_APP=bushcraftwebserver.py`, followed by the command `flask run --host=0.0.0.0 --port=8080`
+5. Open your browser and navigate to localhost:8080 to begin using web application
+
 
 ## pre-requisite Knowledge
-
-## Getting started
-
-##API's
-
-
-
-
-
-
-## LogsAnalysis
-LogsAnalysis is a simple python script used to answer 3 questions about the traffic data stored in a news agency's database; what are the agency's most popular articles, who are the most popular authors, and when did users have the hardest time navigating to the agency's website?
-
-## Pre-requisite Knowledge
-<li>SQL and Python</li>
+<li> Python </li>
+<li> Sqlalchemy </li>
 
 ## Needed files
-<li>LogsAnalysis.py - Python script to perform analysis</li>
-<li>newsdata.sql - File used to populate database</li>
+<li>bushcrafwebserver.py - Python script to run flask application</li>
+<li>database_setup.py - Python script to define sqlalchemy framework</li>
+<li>populateDatabase.py - File used to populate database</li>
+<li>client_secrets.json - File used to store google sign in authorization information</li>
 
-## Steps
-1. Place LogsAnalysis.py and newsdata.sql into the folder shared between your host machine and your VM.
-2. Install psycopg2 package onto your host machine. Full documentation <a href="http://initd.org/psycopg/docs/">here</a>
-3. Install PostgreSQL (psql) onto your VM. Full documentation <a href="https://www.postgresql.org/docs/9.4/app-psql.html">here</a>
-4. From your vm, import psql data by cd-ing to where you saved newsdata.sql and using the command `psql -d news -f newsdata.sql`.
-5. Access your database with the command `psql news` and create the necessary views (see below) by copy and pasting them into the terminal and pressing enter
-6. Exit the database with ctrl+D
-7. Navigate to the folder with LogsAnalysis.py and run `python3.5 LogsAnalysis.py` to perform analysis
-8. Results will be saved in Analysis.txt in the same folder as LogsAnalysis.py
-
-
-## Program Design
-The program is composed of several functions that relate to each question. These functions are called at the end of the program to produce the solutions.
-
-Each query was assigned to a string before being executed, in order to simplify the code. This way queries could be combined without typing out one, overly complicated query.
-
-After completing the queries, each function writes the results to Analysis.txt. This approach gives more control over formatting than psycopg2's copy_expert module and psql's COPY statement.
-
-## Necessary Views
-`CREATE VIEW Articlevisits as SELECT SUBSTRING(Log.path from 10) as path, ip, method, status, time, id from Log WHERE POSITION('/article' in log.path) = 1;`
+## API's
+<li>/allPacksJson - Used to get all names, weights, and volumes of all packs in database</li>
+<li>/<i>userID</i>/mypack/json - Used to get all items stored in a particular pack</li>
+<li>/<i>itemID</i>/json - Used to get all details pertaining to a specific item</li>
